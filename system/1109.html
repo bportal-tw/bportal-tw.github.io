@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B PASS - B STUDIO PRODUCTION</title>
+<link rel="icon" href="https://t.kfs.io/organization_resource_files/40719/65789/favicon.png" type="image/png">
+    <meta name="description" content="An event pass management system by B STUDIO PRODUCTION">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="https://t.kfs.io/organization_resource_files/40719/65746/bpassicon.png">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background-color: #F06022;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 80%;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        #result {
+            margin-top: 20px;
+            font-size: 32px;
+        }
+
+        #additionalInfo {
+            margin-top: 10px;
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+        }
+
+        .info {
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.3);
+            padding: 20px;
+            width: 100px;
+        }
+
+        .info div {
+            font-size: 24px;
+            margin: 5px 0;
+        }
+
+        #log {
+            margin-top: 20px;
+            font-size: 14px;
+            white-space: pre-wrap;
+            max-height: 100px;
+            overflow: hidden;
+            width: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.3);
+            position: relative;
+        }
+
+        input[type="text"] {
+            font-size: 24px;
+            padding: 15px;
+            width: 100%;
+            margin: 10px 0;
+            height: 50px;
+        }
+
+        button {
+            padding: 15px 20px;
+            font-size: 20px;
+            margin: 5px;
+            border-radius: 30px;
+            border: none;
+            background-color: rgba(255, 255, 255, 0.3);
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: rgba(255, 255, 255, 0.5);
+        }
+
+        img {
+            width: 120px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+
+        footer {
+            padding: 10px;
+            font-size: 12px;
+            color: white;
+            background-color: rgba(0, 0, 0, 0.5);
+            width: 100%;
+            text-align: center;
+            position: relative;
+        }
+
+        #statusIndicator {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background-color: rgba(0, 0, 0, 0.5);
+            visibility: hidden;
+        }
+
+        .dot {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            transition: background-color 0.5s;
+        }
+
+        .green {
+            background-color: green;
+        }
+
+        .red {
+            background-color: red;
+        }
+
+        .blinking {
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+#displayCount {
+    font-size: 24px;
+    color: white;
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.5s ease, visibility 0s 0.5s;
+}
+
+
+
+#countButton {
+    position: absolute;
+    top: 78px;
+    left: 25px;
+    width: 40px;
+    height: 40px;
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 5;
+    transition: background-color 0.3s ease;
+}
+
+#countButton svg {
+    fill: #FFFFFF;
+}
+
+#countButton.active {
+    background-color: white;
+}
+
+#countButton.active svg {
+    fill: black; 
+}
+
+#countButton.inactive {
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+#countButton.inactive svg {
+    fill: white;
+}
+
+        #menuButton {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 50px;
+            height: 50px;
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 5;
+        }
+
+        .menuIcon {
+            width: 25px;
+            height: 25px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .menuIcon div {
+            height: 4px;
+            background-color: white;
+            border-radius: 2px;
+        }
+
+        #overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+
+        #modalContent {
+            background-color: white;
+            color: black;
+            padding: 20px;
+            border-radius: 10px;
+            width: 300px;
+            text-align: left;
+            position: relative;
+        }
+
+        #closeButton {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 24px;
+            color: black;
+            cursor: pointer;
+        }
+
+        #sheetSelection {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+        }
+
+        #customSheetName {
+            display: none;
+            margin-bottom: 0px;
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            height: 40px;
+            box-sizing: border-box;
+        }
+
+        #confirmButton {
+            margin-top: 15px;
+            margin-left: 0px;
+            padding: 10px;
+            width: 100%;
+            background-color: #F06022;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+        }
+
+#countButton {
+            position: absolute;
+            top: 78px;
+            left: 25px;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 5;
+        }
+
+    @media screen and (max-width: 768px) {
+        footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+        #additionalInfo {
+            gap: 5px;
+        }
+
+        .info {
+            width: calc(33% - 10px);
+            padding: 10px;
+        }
+    }
+
+    #closeButton {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 16px;
+        height: 16px;
+        background-image: url('https://kktix.com/assets/ckeditor/skins/moono-lisa/images/close.png');
+        background-size: cover;
+        background-repeat: no-repeat;
+        cursor: pointer;
+    }
+</style>
+</head>
+<body>
+    <!-- Floating menu button -->
+    <div id="menuButton">
+        <svg xmlns="http://www.w3.org/2000/svg" height="32px" viewBox="0 -960 960 960" width="32px" fill="#FFFFFF"><path d="m370-80-16-128q-13-5-24.5-12T307-235l-119 50L78-375l103-78q-1-7-1-13.5v-27q0-6.5 1-13.5L78-585l110-190 119 50q11-8 23-15t24-12l16-128h220l16 128q13 5 24.5 12t22.5 15l119-50 110 190-103 78q1 7 1 13.5v27q0 6.5-2 13.5l103 78-110 190-118-50q-11 8-23 15t-24 12L590-80H370Zm112-260q58 0 99-41t41-99q0-58-41-99t-99-41q-59 0-99.5 41T342-480q0 58 40.5 99t99.5 41Z"></path></svg>
+    </div>
+    <div id="countButton">
+        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Z"/></svg>
+    </div>
+
+    <div class="content">
+        <img src="https://t.kfs.io/organization_resource_files/40719/65745/bpasslogo.png" alt="B PASS Logo">
+        <h1 id="title">B PASS | <span id="timeDisplay"></span></h1>
+        <input type="text" id="barcodeInput" placeholder="Enter Barcode or Scan Here" maxlength="9">
+        <button id="scanButton">Scan</button>
+        <div id="result"></div>
+        <div id="additionalInfo">
+            <div class="info">
+                <div><strong>Zone</strong></div>
+                <div id="zone"></div>
+            </div>
+            <div class="info">
+                <div><strong>Row</strong></div>
+                <div id="row"></div>
+            </div>
+            <div class="info">
+                <div><strong>Seat</strong></div>
+                <div id="seat"></div>
+            </div>
+        </div>
+        <div id="log"></div>
+    </div>
+
+    <audio id="successSound" src="https://t.kfs.io/organization_resource_files/40719/65626/Bright_UI_-_Task_Completed_03.aac" preload="auto"></audio>
+    <audio id="errorSound" src="https://t.kfs.io/organization_resource_files/40719/65627/Alarm_-_Line_Disruption_Vol_2.aac" preload="auto"></audio>
+    <div id="statusIndicator">
+        <div class="dot" id="connectionDot"></div>
+    </div>
+<div id="displayCount"></div>
+    <!-- Modal overlay with dropdown and custom sheet name input -->
+    <div id="overlay">
+        <div id="modalContent">
+            <div id="closeButton"></div>
+            <label for="sheetSelection">Select Sheet:</label>
+            <select id="sheetSelection">
+                <option value="index">index</option>
+                <option value="Hi-Touch">Hi-Touch</option>
+                <option value="Group Photo 2:1">Group Photo 2:1</option>
+                <option value="Group Photo 2:2">Group Photo 2:2</option>
+                <option value="Group Photo 2:4">Group Photo 2:4</option>
+                <option value="Sound Check">Sound Check</option>
+                <option value="Polaroid">Polaroid</option>
+                <option value="FanSign">FanSign</option>
+                <option value="Pre-Signed Poster">Pre-Signed Poster</option>
+                <option value="Photo Card">Photo Card</option>
+                <option value="Multi">Multi</option>
+                <option value="custom">Custom</option>
+            </select>
+            <input type="text" id="customSheetName" placeholder="Enter custom sheet name">
+            <button id="confirmButton">Select</button>
+        </div>
+    </div>
+
+    <script>
+        const menuButton = document.getElementById('menuButton');
+        const overlay = document.getElementById('overlay');
+        const closeButton = document.getElementById('closeButton');
+        const sheetSelection = document.getElementById('sheetSelection');
+        const customSheetNameInput = document.getElementById('customSheetName');
+        const confirmButton = document.getElementById('confirmButton');
+
+        menuButton.addEventListener('click', () => {
+            overlay.style.visibility = 'visible';
+            overlay.style.opacity = '1';
+        });
+
+        closeButton.addEventListener('click', () => {
+            overlay.style.visibility = 'hidden';
+            overlay.style.opacity = '0';
+        });
+
+        sheetSelection.addEventListener('change', () => {
+            if (sheetSelection.value === 'custom') {
+                customSheetNameInput.style.display = 'block';
+            } else {
+                customSheetNameInput.style.display = 'none';
+            }
+        });
+
+let connectionTimeout;
+
+function checkConnectionStatus() {
+    const dot = document.getElementById('connectionDot');
+    const statusIndicator = document.getElementById('statusIndicator');
+    const fetchPromises = [];
+
+    statusIndicator.style.visibility = 'visible';
+updateDisplayCountPosition();
+ 
+    dot.className = 'dot blinking'; 
+
+    fetchPromises.push(
+        fetch(`https://sheets.googleapis.com/v4/spreadsheets/${CHECK_USED_SHEET_ID}?key=AIzaSyAjosDnoaD8flQs9tp1vAGzmqU1MhSnpwE`).then(response => {
+            if (response.ok) {
+                return 'green';
+            } else {
+                throw new Error('Connection failed for CHECK_USED_SHEET_ID');
+            }
+        })
+    );
+
+    fetchPromises.push(
+        fetch(`https://sheets.googleapis.com/v4/spreadsheets/${CHECK_EXIST_SHEET_ID}?key=AIzaSyAjosDnoaD8flQs9tp1vAGzmqU1MhSnpwE`).then(response => {
+            if (response.ok) {
+                return 'green';
+            } else {
+                throw new Error('Connection failed for CHECK_EXIST_SHEET_ID');
+            }
+        })
+    );
+
+    Promise.all(fetchPromises)
+        .then(results => {
+            dot.className = 'dot green'; 
+            clearTimeout(connectionTimeout);
+            connectionTimeout = setTimeout(() => {
+                statusIndicator.style.visibility = 'hidden';
+updateDisplayCountPosition(); 
+            }, 8000);
+        })
+        .catch(err => {
+            console.error(err); 
+            dot.className = 'dot red'; 
+            clearTimeout(connectionTimeout);
+            connectionTimeout = setTimeout(() => {
+                statusIndicator.style.visibility = 'hidden';
+updateDisplayCountPosition(); 
+            }, 8000);
+        });
+}
+
+    </script>
+    <footer>
+        ⓒ 2025 B STUDIO PRODUCTION
+    </footer>
+
+    <script>
+    const FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSd2m-_Fd6yvXxI8Z1OG7hUAh3cJ76qXzIU6Fra5yDA7-TRaPQ/formResponse';
+    const CHECK_USED_SHEET_ID = '1xmQQKkdw8bVUKMLHRdRiukkKVtpWeaGkOHn_EYUVmdw';
+    const CHECK_EXIST_SHEET_ID = '1kgfV8X4GXk7gzC1CmGxzBr57eFPIJQ7arX7BkUTQz6Q';
+    const CHECK_USED_SHEET_NAME = 'index'; 
+
+    let selectedSheet = document.getElementById('sheetSelection').value;
+
+    document.getElementById('sheetSelection').addEventListener('change', () => {
+        selectedSheet = document.getElementById('sheetSelection').value === 'custom'
+            ? document.getElementById('customSheetName').value
+            : document.getElementById('sheetSelection').value;
+    });
+
+    document.getElementById('scanButton').addEventListener('click', submitBarcode);
+    document.getElementById('barcodeInput').addEventListener('input', function () {
+    });
+
+    document.getElementById('barcodeInput').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') submitBarcode();
+    });
+
+confirmButton.addEventListener('click', () => {
+    const selectedSheet = sheetSelection.value === 'custom'
+        ? customSheetNameInput.value
+        : sheetSelection.value;
+
+    console.log('Selected sheet:', selectedSheet);
+
+    document.getElementById('title').innerHTML = `${selectedSheet} | <span id="timeDisplay"></span>`;
+
+    overlay.style.visibility = 'hidden';
+    overlay.style.opacity = '0';
+
+updateDisplayCount();
+});
+
+function updateTime() {
+            const timeDisplay = document.getElementById('timeDisplay');
+            const now = new Date();
+            const formattedTime = now.toLocaleTimeString();
+            timeDisplay.textContent = formattedTime;
+        }
+
+        setInterval(updateTime, 1000);
+        updateTime();
+
+    function submitBarcode() {
+        const barcode = document.getElementById('barcodeInput').value.trim();
+        if (!barcode) return log('Please enter a barcode.');
+
+        checkIfBarcodeUsed(barcode);
+    }
+
+    function checkIfBarcodeUsed(barcode) {
+        fetch(`https://sheets.googleapis.com/v4/spreadsheets/${CHECK_USED_SHEET_ID}/values/${selectedSheet}!B:B?key=AIzaSyAjosDnoaD8flQs9tp1vAGzmqU1MhSnpwE`)
+            .then(response => response.json())
+            .then(data => {
+                const rows = data.values || [];
+                const isBarcodeUsed = rows.some(row => row[0] === barcode);
+
+                if (isBarcodeUsed) {
+                    showError('ERROR: Barcode Already Used');
+                    log(`Duplicate barcode in ${selectedSheet}: ${barcode}`);
+                } else {
+                    checkBarcodeDetails(barcode);
+                }
+            })
+            .catch(error => {
+                console.error('Error checking if barcode is used:', error);
+                log('Error checking if barcode is used');
+            });
+    }
+
+    function checkBarcodeDetails(barcode) {
+        fetch(`https://sheets.googleapis.com/v4/spreadsheets/${CHECK_EXIST_SHEET_ID}/values/${selectedSheet}!A:M?key=AIzaSyAjosDnoaD8flQs9tp1vAGzmqU1MhSnpwE`)
+            .then(response => response.json())
+            .then(data => {
+                const rows = data.values || [];
+                const barcodeData = rows.find(row => row[0] === barcode);
+
+                if (barcodeData) {
+                    displaySuccess(barcodeData);
+                    submitToGoogleForm(barcode);
+                } else {
+                    showError('ERROR: Barcode Not Found');
+                    log(`Barcode not found in ${selectedSheet}: ${barcode}`);
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching barcode details:', error);
+                log('Error fetching barcode details');
+            });
+    }
+
+    function displaySuccess(barcodeData) {
+        const [zone, row, seat] = [barcodeData[10], barcodeData[11], barcodeData[12]];
+        document.getElementById('zone').innerText = zone || 'N/A';
+        document.getElementById('row').innerText = row || 'N/A';
+        document.getElementById('seat').innerText = seat || 'N/A';
+
+        document.getElementById('result').innerText = 'PASS: Scan Successful';
+        document.body.style.backgroundColor = 'green';
+        playSound('successSound');
+        document.getElementById('barcodeInput').value = '';
+    }
+
+    function showError(message) {
+        document.getElementById('result').innerText = message;
+        document.body.style.backgroundColor = 'red';
+        playSound('errorSound');
+    }
+
+    function submitToGoogleForm(barcode) {
+        const timestamp = new Date().toLocaleString();
+        const formData = new URLSearchParams();
+        formData.append('entry.924494524', timestamp);
+        formData.append('entry.706433288', barcode);
+        formData.append('entry.2120480941', selectedSheet);
+
+        fetch(FORM_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: formData.toString(),
+        })
+        .then(() => {
+            log(`${barcode} registered via ${selectedSheet}`);
+        })
+        .catch(error => {
+            console.error('Error submitting form:', error);
+            log(`Error submitting form for barcode: ${barcode}`);
+        });
+    }
+
+function playSound(soundId) {
+    const originalSound = document.getElementById(soundId);
+    const soundClone = originalSound.cloneNode();
+    soundClone.play().catch(error => {
+        console.error('Audio play error:', error);
+    });
+}
+
+    function log(message) {
+    const logElement = document.getElementById('log');
+    logElement.innerText = message + '\n' + logElement.innerText;
+    logElement.scrollTop = 0;
+}
+
+function updateDisplayCount() {
+    const sheetToFetch = selectedSheet === 'index' ? 'index' : selectedSheet;
+    
+    fetch(`https://sheets.googleapis.com/v4/spreadsheets/${CHECK_USED_SHEET_ID}/values/${sheetToFetch}!C2?key=AIzaSyAjosDnoaD8flQs9tp1vAGzmqU1MhSnpwE`)
+        .then(response => response.json())
+        .then(data => {
+            const count1 = data.values && data.values[0] ? data.values[0][0] : 0;
+            fetch(`https://sheets.googleapis.com/v4/spreadsheets/${CHECK_EXIST_SHEET_ID}/values/${sheetToFetch}!R2?key=AIzaSyAjosDnoaD8flQs9tp1vAGzmqU1MhSnpwE`)
+                .then(response => response.json())
+                .then(data => {
+                    const count2 = data.values && data.values[0] ? data.values[0][0] : 0;
+                    document.getElementById('displayCount').innerText = `${count1}/${count2}`;
+                })
+                .catch(error => {
+                    console.error('Error fetching from second sheet:', error);
+                    document.getElementById('displayCount').innerText = '0/0';
+                });
+        })
+        .catch(error => {
+            console.error('Error fetching from first sheet:', error);
+            document.getElementById('displayCount').innerText = '0/0';
+        });
+}
+
+document.getElementById('sheetSelection').addEventListener('change', function () {
+    selectedSheet = this.value === 'custom' ? customSheetNameInput.value : this.value;
+});
+
+window.onload = function () {
+    updateDisplayCount();
+};
+
+function submitBarcode() {
+    const barcode = document.getElementById('barcodeInput').value.trim();
+    if (!barcode) return log('Please enter a barcode.');
+
+    checkIfBarcodeUsed(barcode);
+
+    setTimeout(() => {
+        updateDisplayCount();
+    }, 1250);
+}
+
+function updateDisplayCountPosition() {
+    const statusIndicator = document.getElementById('statusIndicator');
+    const displayCount = document.getElementById('displayCount');
+
+    if (statusIndicator.style.visibility === 'visible') {
+        displayCount.style.top = '50px';
+    } else {
+        displayCount.style.top = '15px';
+    }
+}
+
+
+window.onload = function () {
+    checkConnectionStatus();
+    updateDisplayCount();
+};
+
+document.addEventListener("DOMContentLoaded", () => {
+    const countButton = document.getElementById('countButton');
+    const displayCount = document.getElementById('displayCount');
+
+    countButton.classList.add('inactive');
+    countButton.classList.remove('active');
+
+    countButton.addEventListener('click', () => {
+        const isVisible = displayCount.style.visibility === 'visible';
+
+        if (isVisible) {
+            displayCount.style.opacity = 0;
+            setTimeout(() => {
+                displayCount.style.visibility = 'hidden';
+            }, 500);
+            
+            countButton.classList.remove('active');
+            countButton.classList.add('inactive');
+        } else {
+            displayCount.style.visibility = 'visible';
+            setTimeout(() => {
+                displayCount.style.opacity = 1;
+            }, 10);
+
+            countButton.classList.remove('inactive');
+            countButton.classList.add('active');
+        }
+    });
+});
+</script>
+</body>
+</html>

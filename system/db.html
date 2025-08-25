@@ -83,6 +83,10 @@ height: 159.47995666305525px;
 
     .media-grid{display:grid; grid-template-columns: repeat(3, 1fr); gap:10px}
     @media (max-width:700px){ .media-grid{grid-template-columns: repeat(2, 1fr);} }
+
+    .media-grid-w{display:grid; grid-template-columns: repeat(2, 1fr); gap:10px}
+    @media (max-width:700px){ .media-grid-w{grid-template-columns: repeat(1, 1fr);} }
+
     .thumb{position:relative; overflow:hidden; border-radius:14px; background:#0c1018; border:1px solid #20283a}
     .thumb img{display:block; width:100%; height:180px; object-fit:cover}
     .thumb .tag{position:absolute; left:8px; top:8px; background:rgba(0,0,0,.5); padding:4px 8px; font-size:12px; border-radius:8px}
@@ -101,8 +105,8 @@ height: 159.47995666305525px;
     .footerbar{display:flex; gap:10px; align-items:center; justify-content:space-between; padding:12px 16px; border-top:1px solid #1d2230; background:linear-gradient(180deg, rgba(255,255,255,.01), rgba(0,0,0,.08))}
     .pager{display:flex; align-items:center; gap:8px}
     .mini{font-size:12px; color:#aab4c6}
-    .search{flex:1; display:flex; gap:10px; justify-content:flex-end}
-    .search input{width:260px; max-width: 60vw; appearance:none; border:1px solid #2a3552; outline:none; background:#0e1421; color:var(--text); padding:10px 12px; border-radius:10px}
+    .search{flex:1; display:flex; gap:10px;}
+    .search input{width:150px; max-width: 60vw; appearance:none; border:1px solid #2a3552; outline:none; background:#0e1421; color:var(--text); padding:10px 12px; border-radius:10px}
   </style>
 </head>
 <body>
@@ -113,11 +117,11 @@ height: 159.47995666305525px;
     <div class="topbar">
       <div class="badge" id="appId"><span class="dot"></span> TP0000</div>
       <div class="nav">
-        <button class="iconbtn" id="prevBtn" title="上一位">
+        <button class="iconbtn prevBtn" title="ก่อนหน้า">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15 18L9 12L15 6" stroke="#9bb0d0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           ก่อนหน้า
         </button>
-        <button class="iconbtn" id="nextBtn" title="下一位">
+        <button class="iconbtn nextBtn" title="ถัดไป">
           ถัดไป
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 6L15 12L9 18" stroke="#9bb0d0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
@@ -159,7 +163,7 @@ height: 159.47995666305525px;
               <div class="row"><div class="label">ระดับการศึกษา / สถานศึกษา</div><div class="value" id="edu">—</div></div>
               <div class="row"><div class="label">อาชีพปัจจุบัน</div><div class="value" id="job">—</div></div>
               <div class="row"><div class="label">ประสบการณ์การแสดง การประกวด งานโฆษณา</div><div class="value" id="exp">—</div></div>
-              <div class="row"><div class="label">รูปภาพประวัติผลงานการแสดง การประกวด งานโฆษณา</div><div class="media-grid" id="works">—</div></div>
+              <div class="row"><div class="label">รูปภาพประวัติผลงานการแสดง การประกวด งานโฆษณา</div><div class="media-grid-w" id="works">—</div></div>
             </div>
 
             <div class="section">
@@ -192,9 +196,19 @@ height: 159.47995666305525px;
       <div class="footerbar">
         <div class="pager mini" id="status">—</div>
         <div class="search">
-          <input id="jumpInput" placeholder="โปรดระบุหมายเลขผู้สมัคร เช่น TP0007）"/>
+          <input id="jumpInput" placeholder="หมายเลขผู้สมัคร"/>
           <button class="iconbtn" id="jumpBtn">แสดงผล</button>
         </div>
+      <div class="nav">
+        <button class="iconbtn prevBtn" title="ก่อนหน้า">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15 18L9 12L15 6" stroke="#9bb0d0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          ก่อนหน้า
+        </button>
+        <button class="iconbtn nextBtn" title="ถัดไป">
+          ถัดไป
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 6L15 12L9 18" stroke="#9bb0d0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
       </div>
     </div>
 
@@ -229,7 +243,7 @@ height: 159.47995666305525px;
     function copyToClipboard(text){
       if(!text) return;
       navigator.clipboard.writeText(text).then(()=>{
-        toast(`已複製：${text}`);
+        toast(`คัดลอก ${text} แล้ว`);
       },()=>{
         alert('複製失敗');
       });
@@ -273,7 +287,7 @@ height: 159.47995666305525px;
 
     function driveImage(url){
       const id = driveIdFromUrl(url);
-      return id ? `https://drive.google.com/uc?export=view&id=${id}` : url;
+      return id ? `https://lh3.google.com/u/0/d/${id}=k` : url;
     }
 
     function driveVideoEmbed(url){
@@ -285,32 +299,42 @@ height: 159.47995666305525px;
       return (str||'').replace(/[&<>\"]/g, s=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[s]));
     }
 
-    function ageFromDOB(dobStr){
-      if(!dobStr) return null;
-      const s = dobStr.trim();
-      let d;
-      if(/^[0-9]{4}[-/][0-9]{1,2}[-/][0-9]{1,2}$/.test(s)){
-        d = new Date(s.replace(/\//g,'-'));
-      }else if(/^[0-9]{1,2}[-/][0-9]{1,2}[-/][0-9]{4}$/.test(s)){
-        const [a,b,c] = s.replace(/\//g,'-').split('-').map(n=>parseInt(n,10));
-        d = new Date(c, b-1, a);
-      }else{
-        const tryD = new Date(s);
-        if(!isNaN(tryD.getTime())) d = tryD; else return null;
-      }
-      const today = new Date();
-      let age = today.getFullYear() - d.getFullYear();
-      const m = today.getMonth() - d.getMonth();
-      if (m < 0 || (m === 0 && today.getDate() < d.getDate())) age--;
-      return {age, date: d};
+function ageFromDOB(dobStr){
+  if(!dobStr) return null;
+  const s = dobStr.trim();
+  let d;
+
+  const parts = s.split(/[\/-]/).map(n=>parseInt(n,10));
+  if(parts.length===3){
+    let month, day, year;
+    if(parts[0] > 12){
+      day = parts[0];
+      month = parts[1];
+      year = parts[2];
+    } else {
+      month = parts[0];
+      day = parts[1];
+      year = parts[2];
     }
+    d = new Date(year, month-1, day);
+  } else {
+    const tryD = new Date(s);
+    if(!isNaN(tryD.getTime())) d = tryD; else return null;
+  }
+
+  const today = new Date();
+  let age = today.getFullYear() - d.getFullYear();
+  const m = today.getMonth() - d.getMonth();
+  if(m < 0 || (m === 0 && today.getDate() < d.getDate())) age--;
+  return {age, date: d};
+}
 
     function fmtDate(d){
       if(!(d instanceof Date)) return '-';
       const y=d.getFullYear();
       const m=String(d.getMonth()+1).padStart(2,'0');
       const da=String(d.getDate()).padStart(2,'0');
-      return `${y}-${m}-${da}`;
+      return `${da}-${m}-${y}`;
     }
 
     function render(i){
@@ -420,7 +444,7 @@ renderWorksPhotos(worksPhotos||'');
       renderVideo('videoWrap', introVideo||'');
 
       // Footer status
-      $('status').textContent = `${applicantId(idx)}　/　ทั้งหมด ${rows.length} คน　（ปัจจุบันคนที่ ${idx+1}）`;
+      $('status').textContent = `${applicantId(idx)}　/　ทั้งหมด ${rows.length} คน　（กำลังดูคนที่ ${idx+1}）`;
     }
 
     function renderImages(targetId, urls){
@@ -454,26 +478,45 @@ renderWorksPhotos(worksPhotos||'');
       }
     }
 
-    function formatLinks(text){
-      const t = (text||'').toString();
-      const urlRE = /(https?:\/\/[^\s)]+)|(www\.[^\s)]+)/gi;
-      return t.replace(urlRE, (m)=>{
-        const href = m.startsWith('http') ? m : `https://${m}`;
-        return `<a class="link" target="_blank" rel="noopener" href="${href}">${m}</a>`;
-      }) || '—';
+function formatLinks(text){
+  const t = (text||'').toString();
+  const urlRE = /(https?:\/\/[^\s)]+)|(www\.[^\s)]+)/gi;
+  return t.replace(urlRE, (m)=>{
+    const href = m.startsWith('http') ? m : `https://${m}`;
+    try {
+      const urlObj = new URL(href);
+      const domain = urlObj.hostname.replace(/^www\./,'');
+      return `<a class="link" target="_blank" rel="noopener" href="${href}">Link (${domain})</a>`;
+    } catch(e){
+      return `<a class="link" target="_blank" rel="noopener" href="${href}">Link</a>`;
     }
+  }) || '—';
+}
 
-    $('prevBtn').addEventListener('click', ()=>{ if(idx>0) render(idx-1); });
-    $('nextBtn').addEventListener('click', ()=>{ if(idx<rows.length-1) render(idx+1); });
+document.querySelectorAll('.prevBtn').forEach(btn => {
+  btn.addEventListener('click', () => { if(idx > 0) render(idx-1); });
+});
 
-    $('jumpBtn').addEventListener('click', ()=>{
-      const v = $('jumpInput').value.trim().toUpperCase();
-      const m = v.match(/^TP(\d{4})$/);
-      if(!m){ toast('โปรดกรอกรูปแบบให้ถูกต้อง เช่น TP0001'); return; }
-      const n = parseInt(m[1],10);
-      if(n<1 || n>rows.length){ toast('เกินกรอบที่กำหนด'); return; }
-      render(n-1);
-    });
+document.querySelectorAll('.nextBtn').forEach(btn => {
+  btn.addEventListener('click', () => { if(idx < rows.length-1) render(idx+1); });
+});
+
+$('jumpBtn').addEventListener('click', jumpToApplicant);
+
+$('jumpInput').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    jumpToApplicant();
+  }
+});
+
+function jumpToApplicant() {
+  const v = $('jumpInput').value.trim().toUpperCase();
+  const m = v.match(/^TP(\d{4})$/);
+  if(!m){ toast('โปรดกรอกรูปแบบให้ถูกต้อง เช่น TP0001'); return; }
+  const n = parseInt(m[1],10);
+  if(n<1 || n>rows.length){ toast('ไม่มีผู้สมัครหมายเลยนี้'); return; }
+  render(n-1);
+}
 
     async function load(){
       const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${RANGE}?key=${API_KEY}`;
@@ -495,4 +538,3 @@ renderWorksPhotos(worksPhotos||'');
   </script>
 </body>
 </html>
-

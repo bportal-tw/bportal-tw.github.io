@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Casting Dashboard | Neptune in the Sky The Series</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0b0d12;          /* page */
+      --card:#11141b;        /* cards */
+      --muted:#9aa3b2;       /* subtle text */
+      --text:#e8edf5;        /* main text */
+      --primary:#4f7cff;     /* accents */
+      --primary-2:#23c0b9;   /* secondary accent */
+      --danger:#ff5d5d;
+      --ring: 0 0 0 3px rgba(79,124,255,.35);
+      --radius: 18px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; background: radial-gradient(1200px 800px at 10% -10%, rgba(79,124,255,.08), transparent),
+                                radial-gradient(1000px 700px at 110% 10%, rgba(35,192,185,.08), transparent), var(--bg);
+background-attachment: fixed;
+      color:var(--text); font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans TC", Helvetica, Arial, sans-serif; line-height:1.55;
+    }
+    .wrap{max-width:1100px; margin:28px auto; padding:0 20px}
+    .topbar{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:16px}
+    .badge{display:inline-flex; align-items:center; gap:8px; background:linear-gradient(180deg, #161a22, #0f1218); border:1px solid #222734; padding:10px 14px; border-radius:999px; font-weight:700; letter-spacing:.3px}
+    .badge .dot{width:8px; height:8px; border-radius:999px; background:var(--primary)}
+    .nav{display:flex; gap:10px}
+    .iconbtn{appearance:none; border:1px solid #243049; background:#0f1420; color:var(--text); padding:10px 12px; border-radius:12px; cursor:pointer; display:inline-flex; align-items:center; gap:8px; transition:transform .05s ease, border-color .2s ease, background .2s ease}
+    .iconbtn:hover{border-color:#314061; background:#11182a}
+    .iconbtn:active{transform:translateY(1px)}
+
+    .card{background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.00)); border:1px solid #202432; border-radius:var(--radius); box-shadow:0 10px 30px rgba(0,0,0,.35); overflow:hidden}
+    .grid{display:grid; grid-template-columns: 1.2fr 1fr; gap:16px}
+    @media (max-width: 980px){ .grid{grid-template-columns:1fr;}}
+
+.banner {
+  width: 100%;
+  max-width: 60vw; 
+  max-height: 90vw;
+height: 159.47995666305525px;
+    width: 640px;
+  margin: 20px auto 30px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.banner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  display: block;
+}
+    .header{padding:18px 20px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #1d2230; backdrop-filter: blur(6px)}
+    .header .title{font-weight:800; font-size:22px}
+    .subtle{color:var(--muted)}
+
+    .content{padding:18px 20px}
+    .section{margin-bottom:18px}
+    .section h3{margin:0 0 8px; font-size:14px; font-weight:700; color:#b7c0cf; letter-spacing:.4px}
+    .row{display:grid; grid-template-columns: 180px 1fr; gap:14px; padding:10px 12px; border-radius:12px}
+    .row:hover{background:linear-gradient(90deg, rgba(79,124,255,.07), transparent)}
+    .label{color:#aab4c6; font-size:13px}
+    .value{font-weight:600}
+
+    .chips{display:flex; flex-wrap:wrap; gap:8px}
+    .chip{padding:8px 10px; border:1px solid #283149; border-radius:10px; background:#0e1421}
+
+    .copywrap{display:flex; gap:8px; align-items:center; flex-wrap:wrap}
+    .copybtn{appearance:none; border:1px solid #2a3552; background:#0f1523; color:var(--text); padding:6px 10px; border-radius:10px; cursor:pointer; font-size:12px}
+    .copybtn:hover{border-color:#324268}
+
+    .link{color:#cfe0ff; text-decoration:none; border-bottom:1px dashed rgba(207,224,255,.5)}
+    .link:hover{opacity:.85}
+
+    .media-grid{display:grid; grid-template-columns: repeat(3, 1fr); gap:10px}
+    @media (max-width:700px){ .media-grid{grid-template-columns: repeat(2, 1fr);} }
+    .thumb{position:relative; overflow:hidden; border-radius:14px; background:#0c1018; border:1px solid #20283a}
+    .thumb img{display:block; width:100%; height:180px; object-fit:cover}
+    .thumb .tag{position:absolute; left:8px; top:8px; background:rgba(0,0,0,.5); padding:4px 8px; font-size:12px; border-radius:8px}
+    .video-frame{width:100%; aspect-ratio:4/3; border:0; border-radius:14px; background:#0c1018}
+
+    .socials{display:flex; gap:12px}
+    .socials a{display:inline-flex; width:36px; height:36px; align-items:center; justify-content:center; border-radius:10px; background:#0f1420; border:1px solid #25314a; transition:transform .1s ease}
+    .socials a:hover{transform:translateY(-1px)}
+    .socials svg{width:20px; height:20px; fill:#8ea2c7; transition:fill .2s ease}
+    .socials a[data-platform="instagram"]:hover svg{fill:#ff6ea9}
+    .socials a[data-platform="facebook"]:hover svg{fill:#7db2ff}
+    .socials a[data-platform="tiktok"]:hover svg{fill:#23c0b9}
+
+    .age-mismatch{color:var(--danger)}
+
+    .footerbar{display:flex; gap:10px; align-items:center; justify-content:space-between; padding:12px 16px; border-top:1px solid #1d2230; background:linear-gradient(180deg, rgba(255,255,255,.01), rgba(0,0,0,.08))}
+    .pager{display:flex; align-items:center; gap:8px}
+    .mini{font-size:12px; color:#aab4c6}
+    .search{flex:1; display:flex; gap:10px; justify-content:flex-end}
+    .search input{width:260px; max-width: 60vw; appearance:none; border:1px solid #2a3552; outline:none; background:#0e1421; color:var(--text); padding:10px 12px; border-radius:10px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+<div class="banner">
+  <img src="https://lh7-rt.googleusercontent.com/formsz/AN7BsVAg1HeIBLcl9D1Ig9iNHSK1IC9n8W7Creg6aSjLYY3KR4FEps36-_ReX4dRoy1llQcblhiS2cbXykUlYYO63GXymKKIyfKMjhSn9idhnm5ki1NE8U4iFGjsgjV4J6LhNVVWJQJREM9TeqXCIZ88qzXw=w923?key=Id0R5nx2-cdvVBD5iJikyQ" alt="Banner Cover">
+</div>
+    <div class="topbar">
+      <div class="badge" id="appId"><span class="dot"></span> TP0000</div>
+      <div class="nav">
+        <button class="iconbtn" id="prevBtn" title="上一位">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15 18L9 12L15 6" stroke="#9bb0d0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          ก่อนหน้า
+        </button>
+        <button class="iconbtn" id="nextBtn" title="下一位">
+          ถัดไป
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 6L15 12L9 18" stroke="#9bb0d0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="header">
+        <div>
+          <div class="title" id="nameCn">—</div>
+          <div class="subtle" id="nameEn">—</div>
+        </div>
+        <div class="socials" id="socialWrap"></div>
+      </div>
+
+      <div class="content">
+        <div class="grid">
+          <div>
+            <div class="section">
+              <h3>ข้อมูลเบื้องต้นผู้สมัคร</h3>
+              <div class="row"><div class="label">ชื่อเล่น</div><div class="value" id="nick">—</div></div>
+              <div class="row"><div class="label">วันเกิด</div><div class="value" id="dob">—</div></div>
+              <div class="row"><div class="label">อายุ</div><div class="value" id="age">—</div></div>
+              <div class="row"><div class="label">น้ำหนัก / ส่วนสูง</div><div class="value" id="hw">—</div></div>
+            </div>
+
+            <div class="section">
+              <h3>ข้อมูลการติดต่อ</h3>
+              <div class="row"><div class="label">เบอร์โทรศัพท์</div><div class="value" id="phone">—</div></div>
+              <div class="row"><div class="label">Email</div>
+                <div class="value copywrap" id="emailWrap">—</div>
+              </div>
+              <div class="row"><div class="label">Line ID / อีเมล</div>
+                <div class="value copywrap" id="lineWrap">—</div>
+              </div>
+            </div>
+
+            <div class="section">
+              <h3>ข้อมูลด้านการศึกษาและประวัติการทำงาน</h3>
+              <div class="row"><div class="label">ระดับการศึกษา / สถานศึกษา</div><div class="value" id="edu">—</div></div>
+              <div class="row"><div class="label">อาชีพปัจจุบัน</div><div class="value" id="job">—</div></div>
+              <div class="row"><div class="label">ประสบการณ์การแสดง การประกวด งานโฆษณา</div><div class="value" id="exp">—</div></div>
+              <div class="row"><div class="label">รูปภาพประวัติผลงานการแสดง การประกวด งานโฆษณา</div><div class="media-grid" id="works">—</div></div>
+            </div>
+
+            <div class="section">
+              <h3>ข้อมูลเฉพาะสำหรับการ Casting</h3>
+              <div class="row"><div class="label">ความสามารถพิเศษ</div><div class="value" id="talent">—</div></div>
+              <div class="row"><div class="label">จุดเด่นของตัวเอง</div><div class="value" id="highlight">—</div></div>
+            </div>
+          </div>
+
+          <div>
+            <div class="section">
+              <h3>เอกสารประกอบการสมัคร</h3>
+              <div class="row" style="display:block">
+                <div class="label" style="margin-bottom:8px">รูปภาพหน้าตรง Portrait</div>
+                <div class="media-grid" id="halfBody"></div>
+              </div>
+              <div class="row" style="display:block">
+                <div class="label" style="margin-bottom:8px">รูปภาพเต็มตัว Full Body</div>
+                <div class="media-grid" id="fullBody"></div>
+              </div>
+              <div class="row" style="display:block">
+                <div class="label" style="margin-bottom:8px">คลิปวิดีโอแนะนำตัว</div>
+                <div id="videoWrap"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footerbar">
+        <div class="pager mini" id="status">—</div>
+        <div class="search">
+          <input id="jumpInput" placeholder="โปรดระบุหมายเลขผู้สมัคร เช่น TP0007）"/>
+          <button class="iconbtn" id="jumpBtn">แสดงผล</button>
+        </div>
+      </div>
+    </div>
+
+    <p class="mini" style="margin-top:10px; text-align:center">ที่มาข้อมูล: แบบฟอร์มการสมัคร Casting ซีรีส์ดวงดาวในเวหา (ไทเป)</p>
+  </div>
+
+  <script>
+    // ======= CONFIG =======
+    const SHEET_ID = '10Kgpxy199vAHLjjp64slWuTP_0J79Zr0aD41hUGGArI';
+    const API_KEY = 'AIzaSyAjosDnoaD8flQs9tp1vAGzmqU1MhSnpwE';
+    const SHEET_NAME = 'Form Responses 1';
+    const RANGE = `${encodeURIComponent(SHEET_NAME)}!A2:T`;
+
+    // ======= STATE =======
+    let rows = []; // raw rows from Sheets
+    let idx = 0;   // current index (0-based, row2=0)
+
+    // ======= UTILITIES =======
+    const $ = (id) => document.getElementById(id);
+
+    function zero(n, len=4){ return String(n).padStart(len,'0'); }
+    function applicantId(i){ return `TP${zero(i+1)}`; }
+
+    function isEmail(str=''){ return /@/.test(str); }
+
+    function toMailLink(str=''){
+      const val = (str||'').trim();
+      if(!val) return '';
+      return isEmail(val) ? `mailto:${val}` : '';
+    }
+
+    function copyToClipboard(text){
+      if(!text) return;
+      navigator.clipboard.writeText(text).then(()=>{
+        toast(`已複製：${text}`);
+      },()=>{
+        alert('複製失敗');
+      });
+    }
+
+    function toast(msg){
+      const t = document.createElement('div');
+      t.textContent = msg;
+      t.style.position='fixed'; t.style.left='50%'; t.style.bottom='28px'; t.style.transform='translateX(-50%)';
+      t.style.background='rgba(0,0,0,.7)'; t.style.color='white'; t.style.padding='10px 14px'; t.style.borderRadius='10px'; t.style.zIndex='1000';
+      document.body.appendChild(t);
+      setTimeout(()=>t.remove(), 1600);
+    }
+
+    // Parse possibly multiple links separated by comma/space/newline
+    function splitLinks(s=''){
+      return (s||'')
+        .split(/[\n,\s]+/)
+        .map(x=>x.trim())
+        .filter(Boolean)
+        .slice(0,5);
+    }
+
+    function detectPlatform(url=''){
+      const u = url.toLowerCase();
+      if(u.includes('instagram.com')) return 'instagram';
+      if(u.includes('facebook.com')) return 'facebook';
+      if(u.includes('tiktok.com')) return 'tiktok';
+      return null;
+    }
+
+    function driveIdFromUrl(url=''){
+      const fileMatch = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+      if(fileMatch) return fileMatch[1];
+      const idParam = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+      if(idParam) return idParam[1];
+      const uc = url.match(/\/uc\?id=([a-zA-Z0-9_-]+)/);
+      if(uc) return uc[1];
+      return null;
+    }
+
+    function driveImage(url){
+      const id = driveIdFromUrl(url);
+      return id ? `https://drive.google.com/uc?export=view&id=${id}` : url;
+    }
+
+    function driveVideoEmbed(url){
+      const id = driveIdFromUrl(url);
+      return id ? `https://drive.google.com/file/d/${id}/preview` : null;
+    }
+
+    function safeHTML(str=''){
+      return (str||'').replace(/[&<>\"]/g, s=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[s]));
+    }
+
+    function ageFromDOB(dobStr){
+      if(!dobStr) return null;
+      const s = dobStr.trim();
+      let d;
+      if(/^[0-9]{4}[-/][0-9]{1,2}[-/][0-9]{1,2}$/.test(s)){
+        d = new Date(s.replace(/\//g,'-'));
+      }else if(/^[0-9]{1,2}[-/][0-9]{1,2}[-/][0-9]{4}$/.test(s)){
+        const [a,b,c] = s.replace(/\//g,'-').split('-').map(n=>parseInt(n,10));
+        d = new Date(c, b-1, a);
+      }else{
+        const tryD = new Date(s);
+        if(!isNaN(tryD.getTime())) d = tryD; else return null;
+      }
+      const today = new Date();
+      let age = today.getFullYear() - d.getFullYear();
+      const m = today.getMonth() - d.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < d.getDate())) age--;
+      return {age, date: d};
+    }
+
+    function fmtDate(d){
+      if(!(d instanceof Date)) return '-';
+      const y=d.getFullYear();
+      const m=String(d.getMonth()+1).padStart(2,'0');
+      const da=String(d.getDate()).padStart(2,'0');
+      return `${y}-${m}-${da}`;
+    }
+
+    function render(i){
+      if(!rows.length){ return; }
+      idx = Math.max(0, Math.min(i, rows.length-1));
+      const r = rows[idx];
+      const [ts, emailAddr,
+        nameCn, nameEn, nick, dob, ageText, hw,
+        phone, emailOrLine, social,
+        edu, job, exp, worksPhotos,
+        talent, highlight,
+        halfBodyLinks, fullBodyLinks, introVideo] = r;
+
+      $('appId').innerHTML = `<span class="dot"></span> ${applicantId(idx)}`;
+      $('nameCn').textContent = nameCn || '—';
+      $('nameEn').textContent = nameEn || '—';
+
+      const platform = detectPlatform(social||'');
+      const pURL = (social||'').trim();
+      const socialWrap = $('socialWrap');
+      socialWrap.innerHTML = '';
+      if(platform && pURL){
+        const svg = {
+          instagram:`<svg viewBox="0 0 24 24" aria-hidden="true">
+  <g transform="scale(0.1421)"> <!-- 24 / 169.063 ≈ 0.1421 -->
+    <path d="M122.406,0H46.654C20.929,0,0,20.93,0,46.655v75.752c0,25.726,20.929,46.655,46.654,46.655h75.752
+                          c25.727,0,46.656-20.93,46.656-46.655V46.655C169.063,20.93,148.133,0,122.406,0z M154.063,122.407
+                          c0,17.455-14.201,31.655-31.656,31.655H46.654C29.2,154.063,15,139.862,15,122.407V46.655C15,29.201,29.2,15,46.654,15h75.752
+                          c17.455,0,31.656,14.201,31.656,31.655V122.407z" />
+    <path d="M84.531,40.97c-24.021,0-43.563,19.542-43.563,43.563c0,24.02,19.542,43.561,43.563,43.561s43.563-19.541,43.563-43.561
+                          C128.094,60.512,108.552,40.97,84.531,40.97z M84.531,113.093c-15.749,0-28.563-12.812-28.563-28.561
+                          c0-15.75,12.813-28.563,28.563-28.563s28.563,12.813,28.563,28.563C113.094,100.281,100.28,113.093,84.531,113.093z" />
+    <path d="M129.921,28.251c-2.89,0-5.729,1.17-7.77,3.22c-2.051,2.04-3.23,4.88-3.23,7.78c0,2.891,1.18,5.73,3.23,7.78
+                          c2.04,2.04,4.88,3.22,7.77,3.22c2.9,0,5.73-1.18,7.78-3.22c2.05-2.05,3.22-4.89,3.22-7.78c0-2.9-1.17-5.74-3.22-7.78
+                          C135.661,29.421,132.821,28.251,129.921,28.251z" />
+  </g>
+</svg>
+`,
+          facebook:`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 22v-8h3l.5-4H13V7.3c0-1.1.3-1.8 1.9-1.8H17V2.1c-.3 0-1.4-.1-2.7-.1-2.7 0-4.6 1.6-4.6 4.7V10H7v4h2.7v8H13Z"/></svg>`,
+          tiktok:`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 8.4a7.2 7.2 0 0 1-4.6-1.6v6.9a5.8 5.8 0 1 1-5.8-5.8c.3 0 .6 0 .9.1V10a3.5 3.5 0 1 0 2.4 3.3V2h2.4c.4 2.4 2.3 4.4 4.7 4.9v1.5Z"/></svg>`
+        }[platform];
+        const a = document.createElement('a');
+        a.href = pURL; a.target = '_blank'; a.rel = 'noopener';
+        a.dataset.platform = platform;
+        a.innerHTML = svg;
+        socialWrap.appendChild(a);
+      }
+
+      $('nick').textContent = nick || '—';
+
+      const parsed = ageFromDOB(dob||'');
+      $('dob').textContent = parsed ? fmtDate(parsed.date) : (dob||'—');
+      const formAge = parseInt((ageText||'').toString().replace(/[^0-9]/g,''),10);
+      const computedAge = parsed ? parsed.age : null;
+      if(computedAge==null){
+        $('age').textContent = ageText || '—';
+      }else{
+        if(!isNaN(formAge) && formAge !== computedAge){
+          $('age').innerHTML = `<span class="age-mismatch">${formAge} ปี（อายุจริง ${computedAge} ปี）</span>`;
+        }else{
+          $('age').textContent = `${computedAge} ปี`;
+        }
+      }
+
+      $('hw').textContent = hw || '—';
+
+      // Contact
+      $('phone').innerHTML = formatLinks(phone||'—');
+
+      const emailLink = toMailLink(emailAddr);
+      $('emailWrap').innerHTML = emailAddr ? `
+        ${emailLink?`<a class="link" href="${emailLink}">${safeHTML(emailAddr)}</a>`: safeHTML(emailAddr)}
+        <button class="copybtn" onclick="copyToClipboard('${(emailAddr||'').replace(/'/g,"&#39;")}')">คัดลอก</button>
+      ` : '—';
+
+      const lineIsEmail = isEmail(emailOrLine||'');
+      const lineMail = toMailLink(emailOrLine);
+      $('lineWrap').innerHTML = emailOrLine ? `
+        ${lineIsEmail?`<a class="link" href="${lineMail}">${safeHTML(emailOrLine)}</a>`: safeHTML(emailOrLine)}
+        <button class="copybtn" onclick="copyToClipboard('${(emailOrLine||'').replace(/'/g,"&#39;")}')">คัดลอก</button>
+      ` : '—';
+
+      // Education / Career / Exp / Works (links clickable)
+      $('edu').innerHTML = formatLinks(edu||'—');
+      $('job').innerHTML = formatLinks(job||'—');
+      $('exp').innerHTML = formatLinks(exp||'—');
+function renderWorksPhotos(text){
+  const links = splitLinks(text).map(driveImage).slice(0,10);
+  if(!links.length) return '—';
+  return `<div class="media-grid">` + links.map((url,i)=>
+    `<a href="${url}" target="_blank">
+       <img src="${url}" alt="works ${i+1}">
+     </a>`
+  ).join('') + `</div>`;
+}
+
+$('works').innerHTML = renderWorksPhotos(worksPhotos||'');
+
+      // Media
+      renderImages('halfBody', splitLinks(halfBodyLinks||'').map(driveImage));
+      renderImages('fullBody', splitLinks(fullBodyLinks||'').map(driveImage));
+      renderVideo('videoWrap', introVideo||'');
+
+      // Footer status
+      $('status').textContent = `${applicantId(idx)}　/　ทั้งหมด ${rows.length} คน　（ปัจจุบันคนที่ ${idx+1}）`;
+    }
+
+    function renderImages(targetId, urls){
+      const el = $(targetId);
+      el.innerHTML = '';
+      if(!urls || !urls.length){ el.innerHTML = '<span class="subtle">— ไม่มีข้อมูล —</span>'; return; }
+      urls.forEach((u,i)=>{
+        const div = document.createElement('a');
+        div.className = 'thumb';
+        div.href = u; div.target = '_blank'; div.rel = 'noopener';
+        div.innerHTML = `<span class="tag">${i+1}</span><img loading="lazy" src="${u}" alt="photo ${i+1}">`;
+        el.appendChild(div);
+      });
+    }
+
+    function renderVideo(targetId, link){
+      const el = $(targetId);
+      el.innerHTML='';
+      const url = (link||'').trim();
+      if(!url){ el.innerHTML = '<span class="subtle">— ไม่มีข้อมูล —</span>'; return; }
+      const embed = driveVideoEmbed(url);
+      if(embed){
+        const iframe = document.createElement('iframe');
+        iframe.className='video-frame';
+        iframe.src = embed;
+        iframe.allow = 'autoplay; encrypted-media';
+        iframe.loading = 'lazy';
+        el.appendChild(iframe);
+      }else{
+        el.innerHTML = `<a class="link" target="_blank" rel="noopener" href="${url}">เปิดลิงค์วิดีโอ</a>`;
+      }
+    }
+
+    function formatLinks(text){
+      const t = (text||'').toString();
+      const urlRE = /(https?:\/\/[^\s)]+)|(www\.[^\s)]+)/gi;
+      return t.replace(urlRE, (m)=>{
+        const href = m.startsWith('http') ? m : `https://${m}`;
+        return `<a class="link" target="_blank" rel="noopener" href="${href}">${m}</a>`;
+      }) || '—';
+    }
+
+    $('prevBtn').addEventListener('click', ()=>{ if(idx>0) render(idx-1); });
+    $('nextBtn').addEventListener('click', ()=>{ if(idx<rows.length-1) render(idx+1); });
+
+    $('jumpBtn').addEventListener('click', ()=>{
+      const v = $('jumpInput').value.trim().toUpperCase();
+      const m = v.match(/^TP(\d{4})$/);
+      if(!m){ toast('โปรดกรอกรูปแบบให้ถูกต้อง เช่น TP0001'); return; }
+      const n = parseInt(m[1],10);
+      if(n<1 || n>rows.length){ toast('เกินกรอบที่กำหนด'); return; }
+      render(n-1);
+    });
+
+    async function load(){
+      const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${RANGE}?key=${API_KEY}`;
+      try{
+        const res = await fetch(url);
+        if(!res.ok) throw new Error('Google Sheets API response failed');
+        const data = await res.json();
+        const values = data.values || [];
+        if(!values.length){ $('status').textContent = 'No data (Please check the sheet name and permission setting)'; return; }
+        rows = values.map(row=>Array.from({length:20}, (_,i)=> row[i]||'')); // pad to T column
+        render(0);
+      }catch(err){
+        console.error(err);
+        $('status').textContent = 'Failed to read, Please check the API Key / permission setting / sheet name';
+      }
+    }
+
+    load();
+  </script>
+</body>
+</html>

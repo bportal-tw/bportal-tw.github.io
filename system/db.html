@@ -346,6 +346,9 @@ function ageFromDOB(dobStr){
         talent, highlight,
         halfBodyLinks, fullBodyLinks, introVideo] = r;
 
+      $('talent').textContent   = talent   || '—';
+      $('highlight').textContent = highlight || '—';
+      
       $('appId').innerHTML = `<span class="dot"></span> ${applicantId(idx)}`;
       $('nameCn').textContent = nameCn || '—';
       $('nameEn').textContent = nameEn || '—';
@@ -536,6 +539,7 @@ function jumpToApplicant() {
   </script>
 </body>
 </html>
+
 
 
 

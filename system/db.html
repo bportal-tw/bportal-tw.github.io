@@ -4,6 +4,11 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Casting Dashboard | Neptune in the Sky The Series</title>
+    <meta name="description" content="Neptune in the Sky The Series Casting Dashboard by B STUDIO PRODUCTION">
+<link rel="icon" href="https://t.kfs.io/organization_resource_files/40719/65789/favicon.png" type="image/png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="https://t.kfs.io/organization_resource_files/40719/65694/bstudioicon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -110,6 +115,20 @@ height: 159.47995666305525px;
   </style>
 </head>
 <body>
+<button id="translateBtn" class="iconbtn" style="
+  position: fixed;
+  left: 20px;
+  bottom: 20px;
+  z-index: 9999;
+">
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 20h9"></path>
+    <path d="M12 4h9"></path>
+    <path d="M4 12h16"></path>
+    <path d="M4 6l-2 6 2 6"></path>
+  </svg>
+  <span>EN</span>
+</button>
   <div class="wrap">
 <div class="banner">
   <img src="https://lh7-rt.googleusercontent.com/formsz/AN7BsVAg1HeIBLcl9D1Ig9iNHSK1IC9n8W7Creg6aSjLYY3KR4FEps36-_ReX4dRoy1llQcblhiS2cbXykUlYYO63GXymKKIyfKMjhSn9idhnm5ki1NE8U4iFGjsgjV4J6LhNVVWJQJREM9TeqXCIZ88qzXw=w923?key=Id0R5nx2-cdvVBD5iJikyQ" alt="Banner Cover">
@@ -117,14 +136,33 @@ height: 159.47995666305525px;
     <div class="topbar">
       <div class="badge" id="appId"><span class="dot"></span> TP0000</div>
       <div class="nav">
-        <button class="iconbtn prevBtn" title="ก่อนหน้า">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15 18L9 12L15 6" stroke="#9bb0d0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          ก่อนหน้า
-        </button>
-        <button class="iconbtn nextBtn" title="ถัดไป">
-          ถัดไป
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 6L15 12L9 18" stroke="#9bb0d0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
+  <button class="iconbtn firstBtn" title="คนแรก">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M6 6V18" stroke="#9bb0d0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M18 18L10 12L18 6" stroke="#9bb0d0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+  </button>
+
+  <button class="iconbtn prevBtn" title="ก่อนหน้า">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M15 18L9 12L15 6" stroke="#9bb0d0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    ก่อนหน้า
+  </button>
+
+  <button class="iconbtn nextBtn" title="ถัดไป">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M9 18L15 12L9 6" stroke="#9bb0d0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    ถัดไป
+  </button>
+
+  <button class="iconbtn lastBtn" title="คนสุดท้าย">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M6 6L14 12L6 18" stroke="#9bb0d0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M18 6V18" stroke="#9bb0d0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+  </button>
       </div>
     </div>
     <div class="card">
@@ -212,6 +250,63 @@ height: 159.47995666305525px;
 
     <p class="mini" style="margin-top:10px; text-align:center">ที่มาข้อมูล: แบบฟอร์มการสมัคร Casting ซีรีส์ดวงดาวในเวหา (ไทเป)</p>
   </div>
+<script>
+  const translateBtn = document.getElementById('translateBtn');
+
+  const originalTexts = {};
+
+  async function translateText(text, target='en'){
+    if(!text) return '';
+    try{
+      const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=zh|${target}`);
+      const data = await res.json();
+      return data.responseData.translatedText || text;
+    }catch(e){
+      console.error(e);
+      return text;
+    }
+  }
+
+  let translated = false;
+
+  translateBtn.addEventListener('click', async () => {
+    const fields = ['edu','job','exp','works','talent','highlight'];
+
+    for(const f of fields){
+      const el = document.getElementById(f);
+      if(!el) continue;
+      if(f === 'works') continue;
+
+      // เก็บต้นฉบับแค่ครั้งแรก
+if(originalTexts[f] === undefined) {
+  originalTexts[f] = el.innerHTML; // <- เปลี่ยนจาก textContent
+}
+
+      if(!translated){
+        const original = originalTexts[f];
+        if(original && original !== '—'){
+          el.textContent = 'กำลังแปล...';
+          const translatedText = await translateText(original, 'en');
+    el.innerHTML = translatedText; // <- เปลี่ยนจาก textContent
+  }
+} else {
+  // กลับไปต้นฉบับ
+  el.innerHTML = originalTexts[f]; // <- เปลี่ยนจาก textContent
+      }
+    }
+
+    translated = !translated;
+
+    // เปลี่ยน label ปุ่ม
+    translateBtn.querySelector('span')?.remove();
+    const label = document.createElement('span');
+    label.textContent = translated ? 'ต้นฉบับ' : 'EN';
+    translateBtn.appendChild(label);
+
+    toast(translated ? 'แปลข้อมูลเป็นอังกฤษแล้ว' : 'กลับไปภาษาต้นฉบับ');
+  });
+</script>
+
 
   <script>
     // ======= CONFIG =======
@@ -221,8 +316,8 @@ height: 159.47995666305525px;
     const RANGE = `${encodeURIComponent(SHEET_NAME)}!A2:T`;
 
     // ======= STATE =======
-    let rows = []; // raw rows from Sheets
-    let idx = 0;   // current index (0-based, row2=0)
+    let rows = [];
+    let idx = 0;
 
     // ======= UTILITIES =======
     const $ = (id) => document.getElementById(id);
@@ -243,7 +338,7 @@ height: 159.47995666305525px;
       navigator.clipboard.writeText(text).then(()=>{
         toast(`คัดลอก ${text} แล้ว`);
       },()=>{
-        alert('複製失敗');
+        alert('คัดลอกไม่สำเร็จ');
       });
     }
 
@@ -256,7 +351,6 @@ height: 159.47995666305525px;
       setTimeout(()=>t.remove(), 1600);
     }
 
-    // Parse possibly multiple links separated by comma/space/newline
     function splitLinks(s=''){
       return (s||'')
         .split(/[\n,\s]+/)
@@ -339,6 +433,9 @@ function ageFromDOB(dobStr){
       if(!rows.length){ return; }
       idx = Math.max(0, Math.min(i, rows.length-1));
       const r = rows[idx];
+  translated = false;
+  for(const key in originalTexts) delete originalTexts[key];
+  translateBtn.querySelector('span').textContent = 'EN';
       const [ts, emailAddr,
         nameCn, nameEn, nick, dob, ageText, hw,
         phone, emailOrLine, social,
@@ -374,8 +471,12 @@ function ageFromDOB(dobStr){
   </g>
 </svg>
 `,
-          facebook:`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 22v-8h3l.5-4H13V7.3c0-1.1.3-1.8 1.9-1.8H17V2.1c-.3 0-1.4-.1-2.7-.1-2.7 0-4.6 1.6-4.6 4.7V10H7v4h2.7v8H13Z"/></svg>`,
-          tiktok:`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 8.4a7.2 7.2 0 0 1-4.6-1.6v6.9a5.8 5.8 0 1 1-5.8-5.8c.3 0 .6 0 .9.1V10a3.5 3.5 0 1 0 2.4 3.3V2h2.4c.4 2.4 2.3 4.4 4.7 4.9v1.5Z"/></svg>`
+facebook: `<svg width="18" height="18" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M16 8.049c0-4.446-3.582-8.05-8-8.05C3.58 0-.002 3.603-.002 8.05c0 4.017 2.926 7.347 6.75 7.951v-5.625h-2.03V8.05H6.75V6.275c0-2.017 1.195-3.131 3.022-3.131.876 0 1.791.157 1.791.157v1.98h-1.009c-.993 0-1.303.621-1.303 1.258v1.51h2.218l-.354 2.326H9.25V16c3.824-.604 6.75-3.934 6.75-7.951"/>
+</svg>`,
+tiktok: `<svg width="18px" height="18px" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <path d="M412.19,118.66a109.27,109.27,0,0,1-9.45-5.5,132.87,132.87,0,0,1-24.27-20.62c-18.1-20.71-24.86-41.72-27.35-56.43h.1C349.14,23.9,350,16,350.13,16H267.69V334.78c0,4.28,0,8.51-.18,12.69,0,.52-.05,1-.08,1.56,0,.23,0,.47-.05.71,0,.06,0,.12,0,.18a70,70,0,0,1-35.22,55.56,68.8,68.8,0,0,1-34.11,9c-38.41,0-69.54-31.32-69.54-70s31.13-70,69.54-70a68.9,68.9,0,0,1,21.41,3.39l.1-83.94a153.14,153.14,0,0,0-118,34.52,161.79,161.79,0,0,0-35.3,43.53c-3.48,6-16.61,30.11-18.2,69.24-1,22.21,5.67,45.22,8.85,54.73v.2c2,5.6,9.75,24.71,22.38,40.82A167.53,167.53,0,0,0,115,470.66v-.2l.2.2C155.11,497.78,199.36,496,199.36,496c7.66-.31,33.32,0,62.46-13.81,32.32-15.31,50.72-38.12,50.72-38.12a158.46,158.46,0,0,0,27.64-45.93c7.46-19.61,9.95-43.13,9.95-52.53V176.49c1,.6,14.32,9.41,14.32,9.41s19.19,12.3,49.13,20.31c21.48,5.7,50.42,6.9,50.42,6.9V131.27C453.86,132.37,433.27,129.17,412.19,118.66Z"/>
+</svg>`
         }[platform];
         const a = document.createElement('a');
         a.href = pURL; a.target = '_blank'; a.rel = 'noopener';
@@ -494,13 +595,43 @@ function formatLinks(text){
   }) || '—';
 }
 
+function resetTranslateBtn() {
+  translated = false;
+  translateBtn.querySelector('span')?.remove();
+  const label = document.createElement('span');
+  label.textContent = 'EN';
+  translateBtn.appendChild(label);
+}
+
+// ตัวอย่างกับปุ่ม first
+document.querySelectorAll('.firstBtn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    render(0);
+    resetTranslateBtn(); // รีเซ็ตปุ่มแปล
+  });
+});
+
 document.querySelectorAll('.prevBtn').forEach(btn => {
-  btn.addEventListener('click', () => { if(idx > 0) render(idx-1); });
+  btn.addEventListener('click', () => {
+    if(idx > 0) render(idx-1);
+    resetTranslateBtn();
+  });
 });
 
 document.querySelectorAll('.nextBtn').forEach(btn => {
-  btn.addEventListener('click', () => { if(idx < rows.length-1) render(idx+1); });
+  btn.addEventListener('click', () => {
+    if(idx < rows.length-1) render(idx+1);
+    resetTranslateBtn();
+  });
 });
+
+document.querySelectorAll('.lastBtn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    render(rows.length-1);
+    resetTranslateBtn();
+  });
+});
+
 
 $('jumpBtn').addEventListener('click', jumpToApplicant);
 
@@ -539,7 +670,3 @@ function jumpToApplicant() {
   </script>
 </body>
 </html>
-
-
-
-

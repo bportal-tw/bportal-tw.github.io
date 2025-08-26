@@ -277,9 +277,8 @@ height: 159.47995666305525px;
       if(!el) continue;
       if(f === 'works') continue;
 
-      // เก็บต้นฉบับแค่ครั้งแรก
 if(originalTexts[f] === undefined) {
-  originalTexts[f] = el.innerHTML; // <- เปลี่ยนจาก textContent
+  originalTexts[f] = el.innerHTML;
 }
 
       if(!translated){
@@ -287,17 +286,16 @@ if(originalTexts[f] === undefined) {
         if(original && original !== '—'){
           el.textContent = 'กำลังแปล...';
           const translatedText = await translateText(original, 'en');
-    el.innerHTML = translatedText; // <- เปลี่ยนจาก textContent
+    el.innerHTML = translatedText;
   }
 } else {
   // กลับไปต้นฉบับ
-  el.innerHTML = originalTexts[f]; // <- เปลี่ยนจาก textContent
+  el.innerHTML = originalTexts[f];
       }
     }
 
     translated = !translated;
 
-    // เปลี่ยน label ปุ่ม
     translateBtn.querySelector('span')?.remove();
     const label = document.createElement('span');
     label.textContent = translated ? 'ต้นฉบับ' : 'EN';
@@ -658,7 +656,7 @@ function jumpToApplicant() {
         const data = await res.json();
         const values = data.values || [];
         if(!values.length){ $('status').textContent = 'No data (Please check the sheet name and permission setting)'; return; }
-        rows = values.map(row=>Array.from({length:20}, (_,i)=> row[i]||'')); // pad to T column
+        rows = values.map(row=>Array.from({length:20}, (_,i)=> row[i]||''));
         render(0);
       }catch(err){
         console.error(err);

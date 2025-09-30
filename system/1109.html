@@ -351,7 +351,7 @@
     <div class="content">
         <img src="https://t.kfs.io/organization_resource_files/40719/65745/bpasslogo.png" alt="B PASS Logo">
         <h1 id="title">B PASS | <span id="timeDisplay"></span></h1>
-        <input type="text" id="barcodeInput" placeholder="Enter Barcode or Scan Here" maxlength="9">
+        <input type="text" id="barcodeInput" placeholder="Scan Here" maxlength="32">
         <button id="scanButton">Scan</button>
         <div id="result"></div>
         <div id="additionalInfo">
@@ -388,12 +388,7 @@
                 <option value="Group Photo 2:1">Group Photo 2:1</option>
                 <option value="Group Photo 2:2">Group Photo 2:2</option>
                 <option value="Group Photo 2:4">Group Photo 2:4</option>
-                <option value="Sound Check">Sound Check</option>
-                <option value="Polaroid">Polaroid</option>
                 <option value="FanSign">FanSign</option>
-                <option value="Pre-Signed Poster">Pre-Signed Poster</option>
-                <option value="Photo Card">Photo Card</option>
-                <option value="Multi">Multi</option>
                 <option value="custom">Custom</option>
             </select>
             <input type="text" id="customSheetName" placeholder="Enter custom sheet name">
@@ -546,15 +541,15 @@ function updateTime() {
                 const isBarcodeUsed = rows.some(row => row[0] === barcode);
 
                 if (isBarcodeUsed) {
-                    showError('ERROR: Barcode Already Used');
-                    log(`Duplicate barcode in ${selectedSheet}: ${barcode}`);
+                    showError('ERROR: QR Code Already Used');
+                    log(`Duplicate qrcode in ${selectedSheet}: ${barcode}`);
                 } else {
                     checkBarcodeDetails(barcode);
                 }
             })
             .catch(error => {
-                console.error('Error checking if barcode is used:', error);
-                log('Error checking if barcode is used');
+                console.error('Error checking if QR Code is used:', error);
+                log('Error checking if QR Code is used');
             });
     }
 
@@ -563,19 +558,19 @@ function updateTime() {
             .then(response => response.json())
             .then(data => {
                 const rows = data.values || [];
-                const barcodeData = rows.find(row => row[0] === barcode);
+                const barcodeData = rows.find(row => row[7] === barcode);
 
                 if (barcodeData) {
                     displaySuccess(barcodeData);
                     submitToGoogleForm(barcode);
                 } else {
-                    showError('ERROR: Barcode Not Found');
-                    log(`Barcode not found in ${selectedSheet}: ${barcode}`);
+                    showError('ERROR: QR Code Not Found');
+                    log(`QR Code not found in ${selectedSheet}: ${barcode}`);
                 }
             })
             .catch(error => {
-                console.error('Error fetching barcode details:', error);
-                log('Error fetching barcode details');
+                console.error('Error fetching QR Code details:', error);
+                log('Error fetching QR Code details');
             });
     }
 
@@ -617,7 +612,7 @@ function updateTime() {
         })
         .catch(error => {
             console.error('Error submitting form:', error);
-            log(`Error submitting form for barcode: ${barcode}`);
+            log(`Error submitting form for QR Code: ${barcode}`);
         });
     }
 
@@ -669,7 +664,7 @@ window.onload = function () {
 
 function submitBarcode() {
     const barcode = document.getElementById('barcodeInput').value.trim();
-    if (!barcode) return log('Please enter a barcode.');
+    if (!barcode) return log('Please enter a QR Code.');
 
     checkIfBarcodeUsed(barcode);
 

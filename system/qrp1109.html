@@ -123,7 +123,7 @@ const ENTRY_SEAT = 'entry.958799611';
 const ENTRY_QR = 'entry.409998067';
 
 const PAIR_RANGE = 'Form Responses 1!A2:Z';
-const PURCHASE_RANGE = 'BoatOat 1st FM in Taipei!A2:AB';
+const PURCHASE_RANGE = 'BoatOat 1st FM in Taipei!A2:AB151';
 
 /* ========== UI refs ========== */
 const connDot = document.getElementById('connDot');
@@ -216,8 +216,8 @@ async function loadAllData(){
 
 /* update counts (top-right) — uses column A count from each sheet as requested */
 function updateCounts(){
-  const pairedCount = pairingRows.length;
-  const purchasedCount = purchaseRows.length;
+  const pairedCount = pairingRows.filter(r => r.some(cell => cell && cell.trim() !== '')).length;
+  const purchasedCount = purchaseRows.filter(r => r.some(cell => cell && cell.trim() !== '')).length;
   countDisplay.textContent = `${pairedCount} / ${purchasedCount}`;
 }
 

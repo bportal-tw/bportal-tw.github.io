@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Queue Control Panel</title>
+<style>
+body{
+  font-family:Arial;
+  background:white;
+  margin:0;
+  padding:40px;
+}
+h1{text-align:center;margin-bottom:5px;}
+h2{text-align:center;color:#777;font-weight:normal;margin-top:0;}
+.queue-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:20px;
+  margin-top:30px;
+}
+.queue-btn{
+  background:#F06022;
+  color:white;
+  border:none;
+  padding:20px;
+  font-size:20px;
+  border-radius:10px;
+  cursor:pointer;
+}
+.queue-desc{
+  font-size:13px;
+  color:#666;
+  margin-top:5px;
+}
+.section{
+  margin-top:50px;
+}
+textarea{
+  width:100%;
+  height:100px;
+  padding:10px;
+}
+.checkbox-group{
+  margin:10px 0;
+}
+button.send{
+  background:#F06022;
+  color:white;
+  padding:12px 20px;
+  border:none;
+  border-radius:6px;
+  font-size:16px;
+  cursor:pointer;
+}
+#log{
+  margin-top:20px;
+  height:200px;
+  overflow:auto;
+  border:1px solid #ddd;
+  padding:10px;
+}
+footer{
+  margin-top:60px;
+  text-align:center;
+  color:#888;
+}
+</style>
+</head>
+<body>
+
+<h1>Queue Control Panel</h1>
+<h2>Queue Management System</h2>
+
+<div class="queue-grid">
+  <div><button class="queue-btn" onclick="callQueue('A')">Queue A</button><div class="queue-desc">No.001-150</div></div>
+  <div><button class="queue-btn" onclick="callQueue('B')">Queue B</button><div class="queue-desc">No.151-300</div></div>
+  <div><button class="queue-btn" onclick="callQueue('C')">Queue C</button><div class="queue-desc">No.301-450</div></div>
+  <div><button class="queue-btn" onclick="callQueue('D')">Queue D</button><div class="queue-desc">No.451-600</div></div>
+  <div><button class="queue-btn" onclick="callQueue('E')">Queue E</button><div class="queue-desc">No.601-750</div></div>
+  <div><button class="queue-btn" onclick="callQueue('F')">Queue F</button><div class="queue-desc">No.751-900</div></div>
+</div>
+
+<div class="section">
+<h2>Custom Announcement</h2>
+<textarea id="message" placeholder="Type message here..."></textarea>
+
+<div class="checkbox-group">
+<b>Queue</b><br>
+<label><input type="checkbox" value="A">A</label>
+<label><input type="checkbox" value="B">B</label>
+<label><input type="checkbox" value="C">C</label>
+<label><input type="checkbox" value="D">D</label>
+<label><input type="checkbox" value="E">E</label>
+<label><input type="checkbox" value="F">F</label>
+</div>
+
+<div class="checkbox-group">
+<b>Status</b><br>
+<label><input type="checkbox" value="waiting">Waiting</label>
+<label><input type="checkbox" value="called">Called</label>
+</div>
+
+<button class="send" onclick="sendAnnouncement()">Send Message</button>
+</div>
+
+<div id="log"></div>
+
+<footer>ⓒ 2026 B STUDIO PRODUCTION</footer>
+
+<script>
+const API_URL="https://script.google.com/macros/s/AKfycbxDeRiIAH2RcNLFGjAEwWvkW-xWSj55WSwsz46x3aP3s_N9SIZGUvTo72b-IvepeSEV-g/exec";
+
+function log(msg){
+  const div=document.getElementById("log");
+  const p=document.createElement("p");
+  p.textContent=msg;
+  div.appendChild(p);
+  div.scrollTop=div.scrollHeight;
+}
+
+async function callQueue(queue){
+  log("Calling Queue "+queue);
+  try{
+    const res = await fetch(API_URL,{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({action:"callQueue",queue:queue})
+    });
+    const data = await res.json();
+    log(`Called ${data.count || 0} users in Queue ${queue}`);
+  }catch(err){log("Error: "+err);}
+}
+
+async function sendAnnouncement(){
+  const message=document.getElementById("message").value;
+  const groups=[...document.querySelectorAll('input[type=checkbox]:checked')]
+    .filter(x=>["A","B","C","D","E","F"].includes(x.value))
+    .map(x=>x.value);
+  const status=[...document.querySelectorAll('input[type=checkbox]:checked')]
+    .filter(x=>["waiting","called"].includes(x.value))
+    .map(x=>x.value);
+  log("Sending Announcement...");
+  try{
+    const res = await fetch(API_URL,{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({action:"announce",groups:groups,status:status,text:message})
+    });
+    const data = await res.json();
+    log(`Announcement sent to ${data.count || 0} users`);
+  }catch(err){log("Error: "+err);}
+}
+</script>
+
+</body>
+</html>

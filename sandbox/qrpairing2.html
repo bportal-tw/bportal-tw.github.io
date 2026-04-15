@@ -37,7 +37,6 @@
   pre#log{white-space:pre-wrap;background:rgba(255,255,255,0.03);padding:8px;border-radius:8px;max-height:160px;overflow:auto}
   @media(max-width:600px){.infoBoxes{flex-direction:column}}
 
-  /* scanner overlay */
   #scannerOverlay{
     position:fixed;inset:0;
     background:rgba(0,0,0,0.85);
@@ -47,136 +46,184 @@
     justify-content:center;
     z-index:9999;
   }
-  #scannerVideo{
-    width:90%;max-width:420px;
-    border-radius:12px;
-  }
-  #scannerClose{
-    margin-top:12px;
-  }
+  #scannerVideo{width:90%;max-width:420px;border-radius:12px;}
 </style>
 </head>
 <body>
-  <div class="panel">
-    <header>
-      <img src="https://t.kfs.io/organization_resource_files/40719/65745/bpasslogo.png" alt="logo">
-      <div>
-        <h1>QR Pairing System 2.0</h1>
-        <div style="font-size:13px;opacity:0.9">B PASS Project by B STUDIO</div>
-      </div>
-    </header>
 
-    <div class="statusRow">
-      <div class="status">
-        <div id="connDot" class="dot"></div>
-        <div id="connText">Checking connection...</div>
-      </div>
-      <div class="counts" id="countDisplay">0 / 0</div>
-    </div>
-
-    <div class="inputs">
-      <div class="field">
-        <label>Row</label>
-        <input id="rowInput" type="text" maxlength="2" />
-      </div>
-      <div class="field">
-        <label>Seat</label>
-        <input id="seatInput" type="text" maxlength="4" inputmode="numeric" />
-      </div>
-    </div>
-
-    <div id="message"></div>
-
-    <div id="qrField">
-      <div style="font-size:13px;margin-bottom:6px">QR Code</div>
-      <input id="qrInput" type="text" maxlength="32" placeholder="Scan QR Code" autocomplete="off" />
-      <div class="controls">
-        <button id="submitQr">SUBMIT</button>
-        <button id="clearBtn">Clear</button>
-      </div>
-    </div>
-
-    <div class="infoBoxes">
-      <div class="info"><div>Zone</div><div id="zoneVal">—</div></div>
-      <div class="info"><div>Row</div><div id="rowVal">—</div></div>
-      <div class="info"><div>Seat</div><div id="seatVal">—</div></div>
-    </div>
-
-    <div class="infoBoxes">
-      <div class="info"><div>Sound Check</div><div id="SoundCheckVal">—</div></div>
-      <div class="info"><div>Polaroid</div><div id="PolaroidVal">—</div></div>
-      <div class="info"><div>Poster</div><div id="PosterVal">—</div></div>
-      <div class="info"><div>Card</div><div id="CardVal">—</div></div>
-      <div class="info"><div>Bonus</div><div id="BonusVal">—</div></div>
-    </div>
-
-    <pre id="log"></pre>
+<div class="panel">
+<header>
+  <img src="https://t.kfs.io/organization_resource_files/40719/65745/bpasslogo.png" alt="logo">
+  <div>
+    <h1>QR Pairing System</h1>
+    <div style="font-size:13px;opacity:0.9">B PASS Project by B STUDIO</div>
   </div>
+</header>
 
-  <div id="scannerOverlay">
-    <video id="scannerVideo" autoplay></video>
-    <button id="scannerClose">Close Scanner</button>
+<div class="statusRow">
+  <div class="status">
+    <div id="connDot" class="dot"></div>
+    <div id="connText">Checking connection...</div>
   </div>
+  <div class="counts" id="countDisplay">0 / 0</div>
+</div>
+
+<div class="inputs">
+  <div class="field">
+    <label>Row</label>
+    <input id="rowInput" type="text" maxlength="2" />
+  </div>
+  <div class="field">
+    <label>Seat</label>
+    <input id="seatInput" type="text" maxlength="4" inputmode="numeric" />
+  </div>
+</div>
+
+<div id="message"></div>
+
+<div id="qrField">
+  <div style="font-size:13px;margin-bottom:6px">QR Code</div>
+  <input id="qrInput" type="text" maxlength="32" placeholder="Scan QR Code" autocomplete="off" />
+  <div class="controls">
+    <button id="submitQr">SUBMIT</button>
+    <button id="clearBtn">Clear</button>
+  </div>
+</div>
+
+<div class="infoBoxes">
+  <div class="info"><div>Zone</div><div id="zoneVal">—</div></div>
+  <div class="info"><div>Row</div><div id="rowVal">—</div></div>
+  <div class="info"><div>Seat</div><div id="seatVal">—</div></div>
+</div>
+
+<div class="infoBoxes">
+  <div class="info"><div>Sound Check</div><div id="SoundCheckVal">—</div></div>
+  <div class="info"><div>Polaroid</div><div id="PolaroidVal">—</div></div>
+  <div class="info"><div>Poster</div><div id="PosterVal">—</div></div>
+  <div class="info"><div>Card</div><div id="CardVal">—</div></div>
+  <div class="info"><div>Bonus</div><div id="BonusVal">—</div></div>
+</div>
+
+<pre id="log"></pre>
+</div>
+
+<div id="scannerOverlay">
+  <video id="scannerVideo" autoplay></video>
+</div>
 
 <script>
-const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+/* ================= CONFIG ================= */
+const API_KEY = 'AIzaSyAjosDnoaD8flQs9tp1vAGzmqU1MhSnpwE';
+const PAIRING_SHEET_ID = '1hGc7l2nzVa9ROHhHUNc18qyOvueLFgFpsecC29gxrHg';
+const PURCHASE_SHEET_ID = '11wRRNmmndWzJNgdhEpCCiziXGRHsTduNqXQ4tM0mAwQ';
+const FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSffC4PSgYvRh80wndX6hfwsfe5yCJJ3HLo2ao121cbAwK31gg/formResponse';
 
-const qrInput = document.getElementById('qrInput');
-const qrField = document.getElementById('qrField');
-const overlay = document.getElementById('scannerOverlay');
-const video = document.getElementById('scannerVideo');
-const closeBtn = document.getElementById('scannerClose');
+const ENTRY_TIMESTAMP='entry.1180355446';
+const ENTRY_ROW='entry.2054252110';
+const ENTRY_SEAT='entry.958799611';
+const ENTRY_QR='entry.409998067';
 
+const PAIR_RANGE='Form Responses 1!A2:Z';
+const PURCHASE_RANGE='BoatOat 1st FM in Taipei!A2:AB151';
+
+/* ================= STATE ================= */
+let pairingRows=[];
+let purchaseRows=[];
+let isConnected=false;
+
+/* ================= UTILS ================= */
+function colToIndex(col){let i=0;col=col.toUpperCase();for(let c of col){i=i*26+(c.charCodeAt(0)-64);}return i-1;}
+
+async function fetchSheet(id,range){
+  const url=`https://sheets.googleapis.com/v4/spreadsheets/${id}/values/${encodeURIComponent(range)}?key=${API_KEY}`;
+  const r=await fetch(url);
+  if(!r.ok) throw new Error('fetch failed');
+  const j=await r.json();
+  return j.values||[];
+}
+
+/* ================= CORE FUNCTIONS (RESTORED) ================= */
+async function loadAllData(){
+  try{pairingRows=await fetchSheet(PAIRING_SHEET_ID,PAIR_RANGE);}catch(e){pairingRows=[];}
+  try{purchaseRows=await fetchSheet(PURCHASE_SHEET_ID,PURCHASE_RANGE);}catch(e){purchaseRows=[];}
+}
+
+function log(msg){document.getElementById('log').textContent+=`\n${msg}`;}
+
+function findPairing(r,s){
+  r=r?.toUpperCase();s=s?.trim();
+  for(let row of pairingRows){
+    if(String(row[2]).toUpperCase()===r && String(row[3])===s){return true;}
+  }
+  return null;
+}
+
+function findPurchase(r,s){
+  for(let row of purchaseRows){
+    if(String(row[18]).toUpperCase()===r && String(row[19])===s){return row;}
+  }
+  return null;
+}
+
+function resetUI(){document.getElementById('qrField').style.display='none';}
+
+async function validateRowSeat(){
+  const r=rowInput.value.trim().toUpperCase();
+  const s=seatInput.value.trim();
+  if(!r||!s)return;
+  await loadAllData();
+  if(findPairing(r,s)){log('already paired');return;}
+  const p=findPurchase(r,s);
+  if(p){document.getElementById('qrField').style.display='block';}
+}
+
+async function submitPairing(r,s,qr){
+  const body=new URLSearchParams();
+  body.append(ENTRY_ROW,r);
+  body.append(ENTRY_SEAT,s);
+  body.append(ENTRY_QR,qr);
+  body.append(ENTRY_TIMESTAMP,new Date().toLocaleString());
+  await fetch(FORM_RESPONSE_URL,{method:'POST',mode:'no-cors',body});
+  log('submitted');
+}
+
+/* ================= SCANNER ================= */
+const isMobile=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+const overlay=document.getElementById('scannerOverlay');
+const video=document.getElementById('scannerVideo');
 let stream;
 
 async function startScanner(){
   overlay.style.display='flex';
-  try{
-    stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});
-    video.srcObject = stream;
+  stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});
+  video.srcObject=stream;
+  const detector=new BarcodeDetector({formats:['qr_code']});
 
-    const detector = new BarcodeDetector({formats:['qr_code']});
-
-    const scan = async () => {
-      if(video.readyState === video.HAVE_ENOUGH_DATA){
-        const canvas = document.createElement('canvas');
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(video,0,0);
-        const bitmap = await createImageBitmap(canvas);
-        const codes = await detector.detect(bitmap);
-
-        if(codes.length){
-          const val = codes[0].rawValue;
-          stopScanner();
-          qrInput.value = val;
-          submitAuto(val);
-          return;
-        }
+  const scan=async()=>{
+    if(video.readyState===video.HAVE_ENOUGH_DATA){
+      const c=document.createElement('canvas');
+      c.width=video.videoWidth;c.height=video.videoHeight;
+      const ctx=c.getContext('2d');ctx.drawImage(video,0,0);
+      const bmp=await createImageBitmap(c);
+      const codes=await detector.detect(bmp);
+      if(codes.length){
+        const val=codes[0].rawValue;
+        stopScanner();
+        qrInput.value=val;
+        submitAuto(val);
+        return;
       }
-      requestAnimationFrame(scan);
-    };
-    scan();
-  }catch(e){console.error(e);}
+    }
+    requestAnimationFrame(scan);
+  };
+  scan();
 }
 
-function stopScanner(){
-  overlay.style.display='none';
-  if(stream){stream.getTracks().forEach(t=>t.stop());}
-}
+function stopScanner(){overlay.style.display='none';if(stream)stream.getTracks().forEach(t=>t.stop());}
+function submitAuto(v){qrInput.value=v;qrInput.dispatchEvent(new Event('input'));}
 
-closeBtn.onclick=stopScanner;
+if(isMobile){qrField.addEventListener('click',startScanner);}
 
-function submitAuto(val){
-  qrInput.value = val;
-  qrInput.dispatchEvent(new Event('input'));
-}
-
-if(isMobile){
-  qrField.addEventListener('click', startScanner);
-}
 </script>
-
 </body>
 </html>

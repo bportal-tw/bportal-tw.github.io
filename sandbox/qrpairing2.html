@@ -45,8 +45,19 @@
     align-items:center;
     justify-content:center;
     z-index:9999;
+        gap:16px;
   }
   #scannerVideo{width:90%;max-width:420px;border-radius:12px;}
+
+#scanBtn{
+  display:none;
+}
+
+@media (max-width: 768px){
+  #scanBtn{
+    display:inline-block;
+  }
+}
 </style>
 </head>
 <body>
@@ -556,6 +567,10 @@ if(isMobile){
   scanBtn.style.display = 'inline-block';
   scanBtn.addEventListener('click', startScanner);
 }
+
+const scannerClose = document.getElementById('scannerClose');
+
+scannerClose.addEventListener('click', stopScanner);
 
 /* startup */
 (async function init(){

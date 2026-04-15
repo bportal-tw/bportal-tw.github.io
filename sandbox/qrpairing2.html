@@ -4,135 +4,178 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1.0" />
 <title>QR Pairing — B STUDIO PRODUCTION</title>
-
-<script src="https://unpkg.com/html5-qrcode"></script>
-
+<link rel="icon" href="https://t.kfs.io/organization_resource_files/40719/65789/favicon.png" type="image/png">
+<meta name="description" content="An event pass management system by B STUDIO PRODUCTION">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="https://t.kfs.io/organization_resource_files/40719/65746/bpassicon.png">
 <style>
-:root{--orange:#F06022;--white:#fff}
-html,body{height:100%;margin:0;font-family:Arial,Helvetica,sans-serif}
-body{background:var(--orange);color:var(--white);display:flex;flex-direction:column;align-items:center;padding:18px}
-.panel{width:100%;max-width:820px;background:rgba(255,255,255,0.06);border-radius:12px;padding:18px}
-input{padding:12px;border-radius:8px;border:0;font-size:18px;width:100%}
-button{padding:10px;border-radius:8px;border:0;background:#fff;color:#000}
-#reader{margin-top:10px}
+  :root{--orange:#F06022;--white:#fff}
+  html,body{height:100%;margin:0;font-family:Arial,Helvetica,sans-serif}
+  body{background:var(--orange);color:var(--white);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:18px;box-sizing:border-box}
+  .panel{width:100%;max-width:820px;background:rgba(255,255,255,0.06);border-radius:12px;padding:18px;box-sizing:border-box}
+  header{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+  header img{height:56px}
+  h1{margin:0;font-size:20px}
+  .statusRow{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+  .status {display:flex;gap:10px;align-items:center}
+  .dot{width:14px;height:14px;border-radius:50%;background:#999}
+  .counts{font-weight:700}
+  .inputs{display:flex;gap:12px;flex-wrap:wrap}
+  .field{flex:1;min-width:140px}
+  label{font-size:13px;opacity:0.95}
+  input[type=text]{width:100%;padding:12px;border-radius:8px;border:0;font-size:18px;box-sizing:border-box;}
+#rowInput { text-transform: uppercase; }
+  #qrField{display:none;margin-top:12px}
+  .infoBoxes{display:flex;gap:12px;margin-top:12px;flex-wrap:wrap}
+  .info{background:rgba(255,255,255,0.08);padding:10px;border-radius:8px;min-width:120px;text-align:center}
+  #message{margin-top:12px;font-size:16px;min-height:36px}
+  .controls{display:flex;gap:8px;margin-top:12px}
+  button{background:rgba(255,255,255,0.18);border:0;color:#fff;padding:10px 14px;border-radius:8px;font-size:15px;cursor:pointer}
+  .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:24px;background:#fff;color:#000;padding:14px 18px;border-radius:10px;box-shadow:0 8px 30px rgba(0,0,0,0.2);display:none;align-items:center;gap:10px}
+  footer{margin-top:18px;font-size:12px;opacity:0.95}
+  pre#log{white-space:pre-wrap;background:rgba(255,255,255,0.03);padding:8px;border-radius:8px;max-height:160px;overflow:auto}
+  @media(max-width:600px){.infoBoxes{flex-direction:column}}
+
+  /* scanner overlay */
+  #scannerOverlay{
+    position:fixed;inset:0;
+    background:rgba(0,0,0,0.85);
+    display:none;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    z-index:9999;
+  }
+  #scannerVideo{
+    width:90%;max-width:420px;
+    border-radius:12px;
+  }
+  #scannerClose{
+    margin-top:12px;
+  }
 </style>
 </head>
-
 <body>
-<div class="panel">
+  <div class="panel">
+    <header>
+      <img src="https://t.kfs.io/organization_resource_files/40719/65745/bpasslogo.png" alt="logo">
+      <div>
+        <h1>QR Pairing System 2.0</h1>
+        <div style="font-size:13px;opacity:0.9">B PASS Project by B STUDIO</div>
+      </div>
+    </header>
 
-<h2>QR Pairing System</h2>
+    <div class="statusRow">
+      <div class="status">
+        <div id="connDot" class="dot"></div>
+        <div id="connText">Checking connection...</div>
+      </div>
+      <div class="counts" id="countDisplay">0 / 0</div>
+    </div>
 
-<input id="rowInput" placeholder="Row">
-<input id="seatInput" placeholder="Seat">
+    <div class="inputs">
+      <div class="field">
+        <label>Row</label>
+        <input id="rowInput" type="text" maxlength="2" />
+      </div>
+      <div class="field">
+        <label>Seat</label>
+        <input id="seatInput" type="text" maxlength="4" inputmode="numeric" />
+      </div>
+    </div>
 
-<div id="qrField" style="display:none;">
-  <input id="qrInput" placeholder="Scan QR">
+    <div id="message"></div>
 
-  <div id="cameraContainer" style="display:none;">
-    <div id="reader"></div>
+    <div id="qrField">
+      <div style="font-size:13px;margin-bottom:6px">QR Code</div>
+      <input id="qrInput" type="text" maxlength="32" placeholder="Scan QR Code" autocomplete="off" />
+      <div class="controls">
+        <button id="submitQr">SUBMIT</button>
+        <button id="clearBtn">Clear</button>
+      </div>
+    </div>
+
+    <div class="infoBoxes">
+      <div class="info"><div>Zone</div><div id="zoneVal">—</div></div>
+      <div class="info"><div>Row</div><div id="rowVal">—</div></div>
+      <div class="info"><div>Seat</div><div id="seatVal">—</div></div>
+    </div>
+
+    <div class="infoBoxes">
+      <div class="info"><div>Sound Check</div><div id="SoundCheckVal">—</div></div>
+      <div class="info"><div>Polaroid</div><div id="PolaroidVal">—</div></div>
+      <div class="info"><div>Poster</div><div id="PosterVal">—</div></div>
+      <div class="info"><div>Card</div><div id="CardVal">—</div></div>
+      <div class="info"><div>Bonus</div><div id="BonusVal">—</div></div>
+    </div>
+
+    <pre id="log"></pre>
   </div>
 
-  <button id="submitQr">Submit</button>
-</div>
-
-<div id="message"></div>
-
-</div>
+  <div id="scannerOverlay">
+    <video id="scannerVideo" autoplay></video>
+    <button id="scannerClose">Close Scanner</button>
+  </div>
 
 <script>
+const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
-/* ========= CONFIG ========= */
-const FORM_RESPONSE_URL = 'YOUR_GOOGLE_FORM_URL';
-const ENTRY_ROW = 'entry.xxx';
-const ENTRY_SEAT = 'entry.xxx';
-const ENTRY_QR = 'entry.xxx';
-
-/* ========= ELEMENT ========= */
-const rowInput = document.getElementById('rowInput');
-const seatInput = document.getElementById('seatInput');
 const qrInput = document.getElementById('qrInput');
 const qrField = document.getElementById('qrField');
-const message = document.getElementById('message');
+const overlay = document.getElementById('scannerOverlay');
+const video = document.getElementById('scannerVideo');
+const closeBtn = document.getElementById('scannerClose');
 
-/* ========= MOBILE CHECK ========= */
-function isMobile(){
-  return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+let stream;
+
+async function startScanner(){
+  overlay.style.display='flex';
+  try{
+    stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});
+    video.srcObject = stream;
+
+    const detector = new BarcodeDetector({formats:['qr_code']});
+
+    const scan = async () => {
+      if(video.readyState === video.HAVE_ENOUGH_DATA){
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(video,0,0);
+        const bitmap = await createImageBitmap(canvas);
+        const codes = await detector.detect(bitmap);
+
+        if(codes.length){
+          const val = codes[0].rawValue;
+          stopScanner();
+          qrInput.value = val;
+          submitAuto(val);
+          return;
+        }
+      }
+      requestAnimationFrame(scan);
+    };
+    scan();
+  }catch(e){console.error(e);}
 }
 
-/* ========= CAMERA ========= */
-let qrScanner = null;
-
-function startCameraScanner(){
-  if(qrScanner) return;
-
-  qrScanner = new Html5Qrcode("reader");
-
-  qrScanner.start(
-    { facingMode: "environment" },
-    { fps: 10, qrbox: 250 },
-    (decodedText) => {
-      qrInput.value = decodedText.slice(0,32);
-      submitPairing();
-      stopCameraScanner();
-    }
-  );
+function stopScanner(){
+  overlay.style.display='none';
+  if(stream){stream.getTracks().forEach(t=>t.stop());}
 }
 
-function stopCameraScanner(){
-  if(qrScanner){
-    qrScanner.stop().then(()=>{
-      qrScanner.clear();
-      qrScanner = null;
-    });
-  }
+closeBtn.onclick=stopScanner;
+
+function submitAuto(val){
+  qrInput.value = val;
+  qrInput.dispatchEvent(new Event('input'));
 }
 
-/* ========= VALIDATE ========= */
-function validate(){
-  if(rowInput.value && seatInput.value){
-    qrField.style.display = 'block';
-
-    if(isMobile()){
-      document.getElementById('cameraContainer').style.display = 'block';
-      startCameraScanner();
-    }
-  }
+if(isMobile){
+  qrField.addEventListener('click', startScanner);
 }
-
-rowInput.addEventListener('input', validate);
-seatInput.addEventListener('input', validate);
-
-/* ========= SUBMIT ========= */
-function submitPairing(){
-  const body = new URLSearchParams();
-  body.append(ENTRY_ROW, rowInput.value);
-  body.append(ENTRY_SEAT, seatInput.value);
-  body.append(ENTRY_QR, qrInput.value);
-
-  fetch(FORM_RESPONSE_URL, {
-    method: 'POST',
-    mode: 'no-cors',
-    body: body
-  });
-
-  message.innerText = "Saved!";
-  reset();
-}
-
-document.getElementById('submitQr').onclick = submitPairing;
-
-/* ========= RESET ========= */
-function reset(){
-  stopCameraScanner();
-  document.getElementById('cameraContainer').style.display = 'none';
-
-  rowInput.value = '';
-  seatInput.value = '';
-  qrInput.value = '';
-  qrField.style.display = 'none';
-}
-
 </script>
 
 </body>

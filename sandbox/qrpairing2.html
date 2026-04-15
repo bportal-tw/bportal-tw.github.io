@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0" />
 <title>QR Pairing — B STUDIO PRODUCTION</title>
 <link rel="icon" href="https://t.kfs.io/organization_resource_files/40719/65789/favicon.png" type="image/png">
-<meta name="description" content="An event pass management system by B STUDIO PRODUCTION">
-<meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="description" content="An event pass management system by B STUDIO PRODUCTION">
+    <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="apple-touch-icon" href="https://t.kfs.io/organization_resource_files/40719/65746/bpassicon.png">
 <style>
@@ -50,141 +50,463 @@
 </style>
 </head>
 <body>
+  <div class="panel">
+    <header>
+      <img src="https://t.kfs.io/organization_resource_files/40719/65745/bpasslogo.png" alt="logo">
+      <div>
+        <h1>QR Pairing System 2.0</h1>
+        <div style="font-size:13px;opacity:0.9">B PASS Project by B STUDIO</div>
+      </div>
+    </header>
 
-<div class="panel">
-<header>
-  <img src="https://t.kfs.io/organization_resource_files/40719/65745/bpasslogo.png" alt="logo">
-  <div>
-    <h1>QR Pairing System</h1>
-    <div style="font-size:13px;opacity:0.9">B PASS Project by B STUDIO</div>
+    <div class="statusRow">
+      <div class="status">
+        <div id="connDot" class="dot" title="Connection status"></div>
+        <div id="connText">Checking connection...</div>
+      </div>
+      <div class="counts" id="countDisplay">0 / 0</div>
+    </div>
+
+    <div>
+      <div style="font-size:13px;margin-bottom:6px">Row and Seat</div>
+      <div class="inputs">
+        <div class="field">
+          <label for="rowInput">Row</label>
+          <input id="rowInput" type="text" maxlength="2" placeholder="A" autocomplete="off" />
+        </div>
+        <div class="field">
+          <label for="seatInput">Seat No.</label>
+          <input id="seatInput" type="text" maxlength="4" placeholder="1" inputmode="numeric" autocomplete="off" />
+        </div>
+      </div>
+
+      <div id="message" aria-live="polite"></div>
+
+      <div id="qrField">
+        <div style="font-size:13px;margin-bottom:6px">QR Code</div>
+        <input id="qrInput" type="text" maxlength="32" placeholder="Scan QR Code" autocomplete="off" />
+        <div class="controls">
+          <button id="submitQr" type="button">SUBMIT</button>
+          <button id="clearBtn" type="button">Clear</button>
+        </div>
+      </div>
+
+      <div class="infoBoxes">
+        <div class="info"><div style="font-size:12px">Zone</div><div id="zoneVal">—</div></div>
+        <div class="info"><div style="font-size:12px">Row</div><div id="rowVal">—</div></div>
+        <div class="info"><div style="font-size:12px">Seat</div><div id="seatVal">—</div></div>
+      </div>
+
+      <div class="infoBoxes">
+        <div class="info"><div style="font-size:12px">Sound Check</div><div id="SoundCheckVal">—</div></div>
+        <div class="info"><div style="font-size:12px">拍立得</div><div id="PolaroidVal">—</div></div>
+        <div class="info"><div style="font-size:12px">海報</div><div id="PosterVal">—</div></div>
+        <div class="info"><div style="font-size:12px">小卡</div><div id="CardVal">—</div></div>
+        <div class="info"><div style="font-size:12px">衣服</div><div id="BonusVal">—</div></div>
+      </div>
+
+      <div style="margin-top:12px">
+        <div style="font-size:13px">Log:</div>
+        <pre id="log"></pre>
+      </div>
+    </div>
   </div>
-</header>
 
-<div class="statusRow">
-  <div class="status">
-    <div id="connDot" class="dot"></div>
-    <div id="connText">Checking connection...</div>
+  <div class="toast" id="successToast">
+    <div id="toastText">Pairing successful</div>
+    <div style="margin-left:12px">
+      <button id="closeToast">Close</button>
+    </div>
   </div>
-  <div class="counts" id="countDisplay">0 / 0</div>
-</div>
 
-<div class="inputs">
-  <div class="field">
-    <label>Row</label>
-    <input id="rowInput" type="text" maxlength="2" />
-  </div>
-  <div class="field">
-    <label>Seat</label>
-    <input id="seatInput" type="text" maxlength="4" inputmode="numeric" />
-  </div>
-</div>
-
-<div id="message"></div>
-
-<div id="qrField">
-  <div style="font-size:13px;margin-bottom:6px">QR Code</div>
-  <input id="qrInput" type="text" maxlength="32" placeholder="Scan QR Code" autocomplete="off" />
-  <div class="controls">
-    <button id="submitQr">SUBMIT</button>
-    <button id="clearBtn">Clear</button>
-  </div>
-</div>
-
-<div class="infoBoxes">
-  <div class="info"><div>Zone</div><div id="zoneVal">—</div></div>
-  <div class="info"><div>Row</div><div id="rowVal">—</div></div>
-  <div class="info"><div>Seat</div><div id="seatVal">—</div></div>
-</div>
-
-<div class="infoBoxes">
-  <div class="info"><div>Sound Check</div><div id="SoundCheckVal">—</div></div>
-  <div class="info"><div>Polaroid</div><div id="PolaroidVal">—</div></div>
-  <div class="info"><div>Poster</div><div id="PosterVal">—</div></div>
-  <div class="info"><div>Card</div><div id="CardVal">—</div></div>
-  <div class="info"><div>Bonus</div><div id="BonusVal">—</div></div>
-</div>
-
-<pre id="log"></pre>
-</div>
-
-<div id="scannerOverlay">
-  <video id="scannerVideo" autoplay></video>
-</div>
+  <footer>© 2026 B STUDIO PRODUCTION</footer>
 
 <script>
-/* ================= CONFIG ================= */
+/* ========== CONFIG ========== */
 const API_KEY = 'AIzaSyAjosDnoaD8flQs9tp1vAGzmqU1MhSnpwE';
 const PAIRING_SHEET_ID = '1hGc7l2nzVa9ROHhHUNc18qyOvueLFgFpsecC29gxrHg';
 const PURCHASE_SHEET_ID = '11wRRNmmndWzJNgdhEpCCiziXGRHsTduNqXQ4tM0mAwQ';
 const FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSffC4PSgYvRh80wndX6hfwsfe5yCJJ3HLo2ao121cbAwK31gg/formResponse';
 
-const ENTRY_TIMESTAMP='entry.1180355446';
-const ENTRY_ROW='entry.2054252110';
-const ENTRY_SEAT='entry.958799611';
-const ENTRY_QR='entry.409998067';
+const ENTRY_TIMESTAMP = 'entry.1180355446';
+const ENTRY_ROW = 'entry.2054252110';
+const ENTRY_SEAT = 'entry.958799611';
+const ENTRY_QR = 'entry.409998067';
 
-const PAIR_RANGE='Form Responses 1!A2:Z';
-const PURCHASE_RANGE='BoatOat 1st FM in Taipei!A2:AB151';
+const PAIR_RANGE = 'Form Responses 1!A2:Z';
+const PURCHASE_RANGE = 'BoatOat 1st FM in Taipei!A2:AB151';
 
-/* ================= STATE ================= */
-let pairingRows=[];
-let purchaseRows=[];
-let isConnected=false;
+/* ========== UI refs ========== */
+const connDot = document.getElementById('connDot');
+const connText = document.getElementById('connText');
+const rowInput = document.getElementById('rowInput');
+const seatInput = document.getElementById('seatInput');
+const message = document.getElementById('message');
+const qrField = document.getElementById('qrField');
+const qrInput = document.getElementById('qrInput');
+const submitQr = document.getElementById('submitQr');
+const clearBtn = document.getElementById('clearBtn');
+const zoneVal = document.getElementById('zoneVal');
+const rowVal = document.getElementById('rowVal');
+const seatVal = document.getElementById('seatVal');
+const SoundCheckVal = document.getElementById('SoundCheckVal');
+const PolaroidVal = document.getElementById('PolaroidVal');
+const PosterVal = document.getElementById('PosterVal');
+const CardVal = document.getElementById('CardVal');
+const BonusVal = document.getElementById('BonusVal');
+const logEl = document.getElementById('log');
+const countDisplay = document.getElementById('countDisplay');
+const successToast = document.getElementById('successToast');
+const toastText = document.getElementById('toastText');
+const closeToast = document.getElementById('closeToast');
 
-/* ================= UTILS ================= */
-function colToIndex(col){let i=0;col=col.toUpperCase();for(let c of col){i=i*26+(c.charCodeAt(0)-64);}return i-1;}
+/* ========== state ========== */
+let pairingRows = [];
+let purchaseRows = [];
+let lastPairCheck = null;
+let isConnected = false;
 
-async function fetchSheet(id,range){
-  const url=`https://sheets.googleapis.com/v4/spreadsheets/${id}/values/${encodeURIComponent(range)}?key=${API_KEY}`;
-  const r=await fetch(url);
-  if(!r.ok) throw new Error('fetch failed');
-  const j=await r.json();
-  return j.values||[];
+/* map column letter to index (A=0) */
+function colToIndex(col) {
+  col = col.toUpperCase();
+  let index = 0;
+  for (let i = 0; i < col.length; i++) {
+    index *= 26;
+    index += col.charCodeAt(i) - 64;
+  }
+  return index - 1;
 }
 
-/* ================= CORE FUNCTIONS (RESTORED) ================= */
+/* fetch sheets A:Z data */
+async function fetchSheet(spreadsheetId, range){
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${encodeURIComponent(range)}?key=${API_KEY}`;
+  const res = await fetch(url);
+  if(!res.ok) throw new Error('Sheet fetch failed: ' + res.status);
+  const j = await res.json();
+  return j.values || [];
+}
+
+/* connection check */
+async function checkConnection(){
+  connText.textContent = 'Checking connection...';
+  connDot.style.background = '#999';
+  try {
+    await Promise.all([
+      fetch(`https://sheets.googleapis.com/v4/spreadsheets/${PAIRING_SHEET_ID}?key=${API_KEY}`),
+      fetch(`https://sheets.googleapis.com/v4/spreadsheets/${PURCHASE_SHEET_ID}?key=${API_KEY}`)
+    ]);
+    connDot.style.background = 'green';
+    connText.textContent = 'Connected';
+    isConnected = true;
+    await loadAllData();
+  } catch (e) {
+    console.error(e);
+    connDot.style.background = 'red';
+    connText.textContent = 'Connection failed';
+    isConnected = false;
+    log('Connection failed. Check API key or sheet permissions.');
+  }
+}
+
+/* load both sheets into memory and update counts */
 async function loadAllData(){
-  try{pairingRows=await fetchSheet(PAIRING_SHEET_ID,PAIR_RANGE);}catch(e){pairingRows=[];}
-  try{purchaseRows=await fetchSheet(PURCHASE_SHEET_ID,PURCHASE_RANGE);}catch(e){purchaseRows=[];}
+  try {
+    pairingRows = await fetchSheet(PAIRING_SHEET_ID, PAIR_RANGE);
+  } catch(e){
+    pairingRows = [];
+    console.error('pairing fetch error', e);
+  }
+  try {
+    purchaseRows = await fetchSheet(PURCHASE_SHEET_ID, PURCHASE_RANGE);
+  } catch(e){
+    purchaseRows = [];
+    console.error('purchase fetch error', e);
+  }
+  updateCounts();
 }
 
-function log(msg){document.getElementById('log').textContent+=`\n${msg}`;}
+/* update counts (top-right) — uses column A count from each sheet as requested */
+function updateCounts(){
+  const pairedCount = pairingRows.filter(r => r.some(cell => cell && cell.trim() !== '')).length;
+  const purchasedCount = purchaseRows.filter(r => r.some(cell => cell && cell.trim() !== '')).length;
+  countDisplay.textContent = `${pairedCount} / ${purchasedCount}`;
+}
 
-function findPairing(r,s){
-  r=r?.toUpperCase();s=s?.trim();
-  for(let row of pairingRows){
-    if(String(row[2]).toUpperCase()===r && String(row[3])===s){return true;}
+function benefitsCheck(val, type){
+  if(!val) {
+    return type === 'bonus' ? '❌' : '❌';
+  }
+  val = val.toString().trim();
+  if(val === '✅') return '✅';
+  if(val === '❌') return '❌';
+  if(type === 'bonus'){
+    if(val.includes('恭喜您於FAN BONUS首日購票活動，得「心口不一 Final Ep. T恤一件」。請活動當日至服務台領取。')) return '✅';
+    return '❌';
+  }
+  return '⚠️';
+}
+
+/* show log */
+function log(msg){
+  const t = new Date().toLocaleString();
+  logEl.textContent = `[${t}] ${msg}\n` + logEl.textContent;
+}
+
+/* find existing pairing by row+seat in pairingRows: pairing sheet column letters:
+   Timestamp = B (index 1), Row = C (index 2), Seat = D (index 3)
+   We'll be defensive: check indices exist.
+*/
+function findPairing(row, seat){
+  const r = row?.toString().trim().toUpperCase();
+  const s = seat?.toString().trim();
+  if(!r || !s) return null;
+  for(let i=0;i<pairingRows.length;i++){
+    const rowArr = pairingRows[i];
+    const rowCol = rowArr[colToIndex('C')] || rowArr[2] || '';
+    const seatCol = rowArr[colToIndex('D')] || rowArr[3] || '';
+    if(String(rowCol).toUpperCase() === r && String(seatCol) === s){
+      return {
+        timestamp: rowArr[colToIndex('B')] || rowArr[1] || '',
+        sheetRowIndex: i,
+        raw: rowArr
+      };
+    }
   }
   return null;
 }
 
-function findPurchase(r,s){
-  for(let row of purchaseRows){
-    if(String(row[18]).toUpperCase()===r && String(row[19])===s){return row;}
+/* find purchase info by seat — user requested:
+   Check S (col S) and T (col T) vs L and M.
+   Map letters to indices:
+   K -> 10, L -> 11, M -> 12, N -> 13, S -> 18, T -> 19
+   We'll loop purchaseRows to find matching S/T.
+*/
+function findPurchaseByRowSeat(row, seat){
+  if(!row || !seat) return null;
+  const r = row.toString().trim().toUpperCase();
+  const s = seat.toString().trim();
+  for(let i=0;i<purchaseRows.length;i++){
+    const rowArr = purchaseRows[i];
+    const S = (rowArr[ colToIndex('S') ] || rowArr[18] || '').toString().trim().toUpperCase();
+    const T = (rowArr[ colToIndex('T') ] || rowArr[19] || '').toString().trim();
+    if(S === r && T === s){
+      const K = (rowArr[ colToIndex('K') ] || rowArr[10] || '');
+      const L = (rowArr[ colToIndex('L') ] || rowArr[11] || '');
+      const M = (rowArr[ colToIndex('M') ] || rowArr[12] || '');
+      return {K,L,M,raw:rowArr, index:i};
+    }
   }
   return null;
 }
 
-function resetUI(){document.getElementById('qrField').style.display='none';}
+function resetAllFields() {
+  qrField.style.display = 'none';
+  zoneVal.textContent = '—';
+  rowVal.textContent = '—';
+  seatVal.textContent = '—';
+  SoundCheckVal.textContent = '—';
+  PolaroidVal.textContent = '—';
+  PosterVal.textContent = '—';
+  CardVal.textContent = '—';
+  BonusVal.textContent = '—';
+  message.textContent = '';
+}
 
+/* main validator triggered on every change */
 async function validateRowSeat(){
-  const r=rowInput.value.trim().toUpperCase();
-  const s=seatInput.value.trim();
-  if(!r||!s)return;
-  await loadAllData();
-  if(findPairing(r,s)){log('already paired');return;}
-  const p=findPurchase(r,s);
-  if(p){document.getElementById('qrField').style.display='block';}
+resetAllFields();
+  const r = rowInput.value.trim().toUpperCase();
+  const s = seatInput.value.trim();
+  if(!r || !s) {
+    message.textContent = 'Enter both row and seat to continue.';
+    return;
+  }
+
+  try { await loadAllData(); } catch(e){ console.warn(e); }
+
+  const existing = findPairing(r,s);
+  if(existing){
+    message.innerHTML = `<strong>This seat is already paired.</strong><br/>Recorded at: ${existing.timestamp || 'unknown'}.`;
+    log(`Attempt to pair already-registered seat ${r}-${s}`);
+    return;
+  }
+
+  const purchase = findPurchaseByRowSeat(r,s);
+  if(!purchase){
+    let foundByLM = null;
+    for(let i=0;i<purchaseRows.length;i++){
+      const rowArr = purchaseRows[i];
+      const L = (rowArr[colToIndex('L')] || rowArr[11] || '').toString().trim().toUpperCase();
+      const M = (rowArr[colToIndex('M')] || rowArr[12] || '').toString().trim();
+      if(L === r && M === s){
+        foundByLM = {rowArr, index:i};
+        break;
+      }
+    }
+    if(foundByLM){
+      const origS = (foundByLM.rowArr[colToIndex('S')] || foundByLM.rowArr[18] || '').toString().trim().toUpperCase();
+      const origT = (foundByLM.rowArr[colToIndex('T')] || foundByLM.rowArr[19] || '').toString().trim();
+      if(origS !== r || origT !== s){
+        message.innerHTML = `<strong>Notice:</strong> This ticket has been changed from original seat ${origS}-${origT} to ${r}-${s}. We apologize for the inconvenience.`;
+        zoneVal.textContent = foundByLM.rowArr[colToIndex('K')] || foundByLM.rowArr[10] || '—';
+        rowVal.textContent = foundByLM.rowArr[colToIndex('L')] || foundByLM.rowArr[11] || '—';
+        seatVal.textContent = foundByLM.rowArr[colToIndex('M')] || foundByLM.rowArr[12] || '—';
+        log(`Seat changed detected for ${r}-${s} (original ${origS}-${origT})`);
+//        qrField.style.display = 'block';
+        return;
+      }
+    }
+
+    message.innerHTML = `<strong>Seat not found in purchase records.</strong> Please verify the row & seat.`;
+    log(`Seat ${r}-${s} not found in purchase data`);
+    return;
+  }
+
+  const S = (purchase.raw[colToIndex('S')] || '').toString().trim().toUpperCase();
+  const T = (purchase.raw[colToIndex('T')] || '').toString().trim();
+  const L = (purchase.raw[colToIndex('L')] || '').toString().trim().toUpperCase();
+  const M = (purchase.raw[colToIndex('M')] || '').toString().trim();
+
+  if((L && L !== S) || (M && M !== T)){
+    message.innerHTML = `<strong>Notice:</strong> ⚠️請注意！您的位子原 ${S}-${T}，被調整為 ${L}-${M}。 造成不便，敬請見諒。`;
+    zoneVal.textContent = purchase.K || '—';
+    rowVal.textContent = L || S || '—';
+    seatVal.textContent = M || T || '—';
+    log(`Seat change: original ${S}-${T}, new ${L}-${M}`);
+SoundCheckVal.textContent = benefitsCheck(
+  purchase.raw[colToIndex('W')] || purchase.raw[22] || '', 'benefits'
+);
+PolaroidVal.textContent = benefitsCheck(
+  purchase.raw[colToIndex('X')] || purchase.raw[23] || '', 'benefits'
+);
+PosterVal.textContent = benefitsCheck(
+  purchase.raw[colToIndex('Z')] || purchase.raw[25] || '', 'benefits'
+);
+CardVal.textContent = benefitsCheck(
+  purchase.raw[colToIndex('AA')] || purchase.raw[26] || '', 'benefits'
+);
+BonusVal.textContent = benefitsCheck(
+  purchase.raw[colToIndex('AB')] || purchase.raw[27] || '', 'bonus'
+);
+    qrField.style.display = 'block';
+    return;
+  }
+
+  message.innerHTML = `OK — purchase record found. Zone: ${purchase.K || '—'}`;
+  zoneVal.textContent = purchase.K || '—';
+  rowVal.textContent = purchase.L || purchase.raw[colToIndex('L')] || S || '—';
+  seatVal.textContent = purchase.M || purchase.raw[colToIndex('M')] || T || '—';
+const soundCheckValRaw = purchase.raw[colToIndex('W')] || purchase.raw[22] || '';
+const polaroidValRaw  = purchase.raw[colToIndex('X')] || purchase.raw[23] || '';
+const posterValRaw    = purchase.raw[colToIndex('Z')] || purchase.raw[25] || '';
+const cardValRaw      = purchase.raw[colToIndex('AA')] || purchase.raw[26] || '';
+const bonusValRaw     = purchase.raw[colToIndex('AB')] || purchase.raw[27] || '';
+
+console.log('Purchase raw benefits/bonus:', {
+  SoundCheck: soundCheckValRaw,
+  Polaroid: polaroidValRaw,
+  Poster: posterValRaw,
+  Card: cardValRaw,
+  Bonus: bonusValRaw
+});
+
+SoundCheckVal.textContent = benefitsCheck(soundCheckValRaw, 'benefits');
+PolaroidVal.textContent  = benefitsCheck(polaroidValRaw, 'benefits');
+PosterVal.textContent    = benefitsCheck(posterValRaw, 'benefits');
+CardVal.textContent      = benefitsCheck(cardValRaw, 'benefits');
+BonusVal.textContent     = benefitsCheck(bonusValRaw, 'bonus');
+
+  qrField.style.display = 'block';
+  log(`Seat ${r}-${s} validated against purchase record. Ready to scan.`);
 }
 
-async function submitPairing(r,s,qr){
-  const body=new URLSearchParams();
-  body.append(ENTRY_ROW,r);
-  body.append(ENTRY_SEAT,s);
-  body.append(ENTRY_QR,qr);
-  body.append(ENTRY_TIMESTAMP,new Date().toLocaleString());
-  await fetch(FORM_RESPONSE_URL,{method:'POST',mode:'no-cors',body});
-  log('submitted');
+/* submit QR pairing to Google Form */
+async function submitPairing(row, seat, qr){
+  if(!qr || qr.length !== 32) {
+    log('QR invalid (must be 32 chars).');
+    return;
+  }
+
+  await loadAllData();
+  const existing = findPairing(row,seat);
+  if(existing){
+    message.innerHTML = `<strong>This seat was just paired by another device/user.</strong><br/>Recorded at: ${existing.timestamp || 'unknown'}.`;
+    log(`Duplicate prevented for ${row}-${seat}`);
+    return;
+  }
+
+  const timestamp = new Date().toLocaleString();
+  const body = new URLSearchParams();
+  body.append(ENTRY_TIMESTAMP, timestamp);
+  body.append(ENTRY_ROW, row);
+  body.append(ENTRY_SEAT, seat);
+  body.append(ENTRY_QR, qr);
+
+  try {
+    await fetch(FORM_RESPONSE_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: {'Content-Type':'application/x-www-form-urlencoded'},
+      body: body.toString()
+    });
+    pairingRows.unshift([timestamp, timestamp, row, seat, qr]);     updateCounts();
+    showSuccessToast(`Pairing saved — ${row}-${seat}`);
+    log(`Pairing recorded: ${row}-${seat} (QR: ${qr})`);
+setTimeout(() => {
+  rowInput.value = '';
+  seatInput.value = '';
+  qrInput.value = '';
+  resetAllFields();
+  loadAllData().catch(()=>{});
+}, 700);
+  } catch(e){
+    console.error(e);
+    message.textContent = 'Error submitting pairing. Try again.';
+    log('Error submitting form: ' + e);
+  }
+}
+
+/* toast with 5s countdown auto-close */
+let toastTimer = null;
+function showSuccessToast(text){
+  toastText.textContent = text + ' - closing in 5s';
+  successToast.style.display = 'flex';
+  let sec = 5;
+  clearInterval(toastTimer);
+  toastTimer = setInterval(() => {
+    sec--;
+    if(sec<=0){
+      clearInterval(toastTimer);
+      successToast.style.display = 'none';
+    } else {
+      toastText.textContent = text + ' - closing in ' + sec + 's';
+    }
+  }, 1000);
+}
+
+/* event wiring */
+rowInput.addEventListener('input', debounce(validateRowSeat, 300));
+seatInput.addEventListener('input', debounce(validateRowSeat, 300));
+qrInput.addEventListener('input', () => {
+  const v = qrInput.value.trim();
+  if(v.length >= 32){
+    submitPairing(rowInput.value.trim().toUpperCase(), seatInput.value.trim(), v.slice(0,32));
+  }
+});
+submitQr.addEventListener('click', () => {
+  const v = qrInput.value.trim();
+  submitPairing(rowInput.value.trim().toUpperCase(), seatInput.value.trim(), v);
+});
+clearBtn.addEventListener('click', () => { qrInput.value=''; });
+closeToast.addEventListener('click', () => { successToast.style.display='none'; clearInterval(toastTimer); });
+
+/* small utility: debounce */
+function debounce(fn, ms){
+  let t;
+  return function(...args){
+    clearTimeout(t);
+    t = setTimeout(()=>fn.apply(this,args), ms);
+  };
 }
 
 /* ================= SCANNER ================= */
@@ -223,6 +545,17 @@ function stopScanner(){overlay.style.display='none';if(stream)stream.getTracks()
 function submitAuto(v){qrInput.value=v;qrInput.dispatchEvent(new Event('input'));}
 
 if(isMobile){qrField.addEventListener('click',startScanner);}
+
+/* startup */
+(async function init(){
+  await checkConnection();
+  rowInput.focus();
+})();
+
+/* periodic refresh of counts to keep UI current (every 15s) */
+setInterval(() => {
+  if(isConnected) loadAllData().catch(()=>{});
+}, 15000);
 
 </script>
 </body>

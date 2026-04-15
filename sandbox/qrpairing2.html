@@ -48,6 +48,12 @@
         gap:10px;
   }
   #scannerVideo{width:90%;max-width:420px;border-radius:12px;}
+  
+  @media (max-width: 768px){
+  .desktop-only{
+    display:none;
+  }
+}
 
 </style>
 <script src="https://unpkg.com/html5-qrcode"></script>
@@ -88,10 +94,10 @@
       <div id="qrField">
         <div style="font-size:13px;margin-bottom:6px">QR Code</div>
         <input id="qrInput" type="text" maxlength="32" placeholder="Scan QR Code" autocomplete="off" />
-        <div class="controls">
-          <button id="submitQr" type="button">SUBMIT</button>
-          <button id="clearBtn" type="button">Clear</button>
-        </div>
+<div class="controls desktop-only">
+  <button id="submitQr" type="button">SUBMIT</button>
+  <button id="clearBtn" type="button">Clear</button>
+</div>
       </div>
 
       <div class="infoBoxes">

@@ -59,6 +59,7 @@
   }
 }
 </style>
+<script src="https://unpkg.com/html5-qrcode"></script>
 </head>
 <body>
   <div class="panel">
@@ -131,10 +132,22 @@
     </div>
   </div>
 
-  <div id="scannerOverlay">
-    <video id="scannerVideo" autoplay></video>
-    <button id="scannerClose">Close Scanner</button>
-  </div>
+<div id="scannerOverlay" style="
+  display:none;
+  position:fixed;
+  inset:0;
+  background:#000;
+  z-index:9999;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+">
+  <div id="reader" style="width:100%; max-width:420px; margin:auto;"></div>
+  <button id="scannerClose" style="position:absolute; bottom:30px; left:50%; transform:translateX(-50%);">
+    Close Scanner
+  </button>
+</div>
 
   <footer>© 2026 B STUDIO PRODUCTION</footer>
 
@@ -527,50 +540,47 @@ function debounce(fn, ms){
 }
 
 /* ================= SCANNER ================= */
-const isMobile=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-const overlay=document.getElementById('scannerOverlay');
-const video=document.getElementById('scannerVideo');
-let stream;
+let qrScanner = null;
 
 async function startScanner(){
-  overlay.style.display='flex';
-  stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});
-  video.srcObject=stream;
-  const detector=new BarcodeDetector({formats:['qr_code']});
+  const overlay = document.getElementById('scannerOverlay');
+  overlay.style.display = 'block';
 
-  const scan=async()=>{
-    if(video.readyState===video.HAVE_ENOUGH_DATA){
-      const c=document.createElement('canvas');
-      c.width=video.videoWidth;c.height=video.videoHeight;
-      const ctx=c.getContext('2d');ctx.drawImage(video,0,0);
-      const bmp=await createImageBitmap(c);
-      const codes=await detector.detect(bmp);
-      if(codes.length){
-        const val=codes[0].rawValue;
+  qrScanner = new Html5Qrcode("reader");
+
+  try {
+    await qrScanner.start(
+      { facingMode: "environment" },
+      {
+        fps: 10,
+  qrbox: { width: 250, height: 250 },
+  aspectRatio: 1.0,
+  disableFlip: true
+      },
+      (decodedText) => {
+        submitPairing(rowInput.value.trim().toUpperCase(), seatInput.value.trim(), decodedText.slice(0,32));
         stopScanner();
-        qrInput.value=val;
-        submitAuto(val);
-        return;
       }
-    }
-    requestAnimationFrame(scan);
-  };
-  scan();
+    );
+  } catch (err) {
+    console.error(err);
+    alert("Camera start failed");
+  }
 }
 
-function stopScanner(){overlay.style.display='none';if(stream)stream.getTracks().forEach(t=>t.stop());}
-function submitAuto(v){qrInput.value=v;qrInput.dispatchEvent(new Event('input'));}
+async function stopScanner(){
+  const overlay = document.getElementById('scannerOverlay');
+  overlay.style.display = 'none';
 
-const scanBtn = document.getElementById('scanBtn');
-
-if(isMobile){
-  scanBtn.style.display = 'inline-block';
-  scanBtn.addEventListener('click', startScanner);
+  if(qrScanner){
+    await qrScanner.stop();
+    await qrScanner.clear();
+    qrScanner = null;
+  }
 }
 
-const scannerClose = document.getElementById('scannerClose');
-
-scannerClose.addEventListener('click', stopScanner);
+document.getElementById('scannerClose')
+  .addEventListener('click', stopScanner);
 
 /* startup */
 (async function init(){

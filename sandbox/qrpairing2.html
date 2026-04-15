@@ -86,6 +86,7 @@
         <div style="font-size:13px;margin-bottom:6px">QR Code</div>
         <input id="qrInput" type="text" maxlength="32" placeholder="Scan QR Code" autocomplete="off" />
         <div class="controls">
+<button id="scanBtn" type="button">SCAN QR</button>
           <button id="submitQr" type="button">SUBMIT</button>
           <button id="clearBtn" type="button">Clear</button>
         </div>
@@ -117,6 +118,11 @@
     <div style="margin-left:12px">
       <button id="closeToast">Close</button>
     </div>
+  </div>
+
+  <div id="scannerOverlay">
+    <video id="scannerVideo" autoplay></video>
+    <button id="scannerClose">Close Scanner</button>
   </div>
 
   <footer>© 2026 B STUDIO PRODUCTION</footer>
@@ -544,7 +550,12 @@ async function startScanner(){
 function stopScanner(){overlay.style.display='none';if(stream)stream.getTracks().forEach(t=>t.stop());}
 function submitAuto(v){qrInput.value=v;qrInput.dispatchEvent(new Event('input'));}
 
-if(isMobile){qrField.addEventListener('click',startScanner);}
+const scanBtn = document.getElementById('scanBtn');
+
+if(isMobile){
+  scanBtn.style.display = 'inline-block';
+  scanBtn.addEventListener('click', startScanner);
+}
 
 /* startup */
 (async function init(){

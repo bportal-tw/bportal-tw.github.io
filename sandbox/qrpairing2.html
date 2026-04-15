@@ -98,7 +98,6 @@
         <div style="font-size:13px;margin-bottom:6px">QR Code</div>
         <input id="qrInput" type="text" maxlength="32" placeholder="Scan QR Code" autocomplete="off" />
         <div class="controls">
-<button id="scanBtn" type="button">SCAN QR</button>
           <button id="submitQr" type="button">SUBMIT</button>
           <button id="clearBtn" type="button">Clear</button>
         </div>
@@ -579,7 +578,17 @@ async function stopScanner(){
   }
 }
 
-document.getElementById('scanBtn').addEventListener('click', startScanner);
+qrInput.addEventListener('focus', () => {
+  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+  if (isMobile) {
+    // เปิด scanner
+    startScanner();
+
+    // กัน keyboard เด้ง
+    qrInput.blur();
+  }
+});
 
 document.getElementById('scannerClose')
   .addEventListener('click', stopScanner);

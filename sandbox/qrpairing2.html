@@ -165,9 +165,9 @@
 <script>
 /* ========== CONFIG ========== */
 const API_KEY = 'AIzaSyAjosDnoaD8flQs9tp1vAGzmqU1MhSnpwE';
-const PAIRING_SHEET_ID = '1hGc7l2nzVa9ROHhHUNc18qyOvueLFgFpsecC29gxrHg';
+const PAIRING_SHEET_ID = '1REnXujRqcsXp6mm7WsX1efJ4QD_Ho-Z2AfM-o_NjVV4';
 const PURCHASE_SHEET_ID = '11wRRNmmndWzJNgdhEpCCiziXGRHsTduNqXQ4tM0mAwQ';
-const FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSffC4PSgYvRh80wndX6hfwsfe5yCJJ3HLo2ao121cbAwK31gg/formResponse';
+const FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSdH_WeJZoKZNSTQv0M-TH93SFW28Wpzn1NnJp-1FfL3tSjMjQ/formResponse';
 
 const ENTRY_TIMESTAMP = 'entry.1180355446';
 const ENTRY_ROW = 'entry.2054252110';
@@ -175,7 +175,7 @@ const ENTRY_SEAT = 'entry.958799611';
 const ENTRY_QR = 'entry.409998067';
 
 const PAIR_RANGE = 'Form Responses 1!A2:Z';
-const PURCHASE_RANGE = 'BoatOat 1st FM in Taipei!A2:AB151';
+const PURCHASE_RANGE = 'Template2026!A2:AB151';
 
 /* ========== UI refs ========== */
 const connDot = document.getElementById('connDot');
@@ -316,11 +316,11 @@ function findPairing(row, seat){
   return null;
 }
 
-/* find purchase info by seat — user requested:
-   Check S (col S) and T (col T) vs L and M.
+/* find purchase info by seat
+   Check L (col L) and M (col M) vs S and T.
    Map letters to indices:
    K -> 10, L -> 11, M -> 12, N -> 13, S -> 18, T -> 19
-   We'll loop purchaseRows to find matching S/T.
+   We'll loop purchaseRows to find matching L/M.
 */
 function findPurchaseByRowSeat(row, seat){
   if(!row || !seat) return null;
@@ -328,13 +328,13 @@ function findPurchaseByRowSeat(row, seat){
   const s = seat.toString().trim();
   for(let i=0;i<purchaseRows.length;i++){
     const rowArr = purchaseRows[i];
-    const S = (rowArr[ colToIndex('S') ] || rowArr[18] || '').toString().trim().toUpperCase();
-    const T = (rowArr[ colToIndex('T') ] || rowArr[19] || '').toString().trim();
-    if(S === r && T === s){
+    const L = (rowArr[ colToIndex('L') ] || rowArr[11] || '').toString().trim().toUpperCase();
+    const M = (rowArr[ colToIndex('M') ] || rowArr[12] || '').toString().trim();
+    if(L === r && M === s){
       const K = (rowArr[ colToIndex('K') ] || rowArr[10] || '');
-      const L = (rowArr[ colToIndex('L') ] || rowArr[11] || '');
-      const M = (rowArr[ colToIndex('M') ] || rowArr[12] || '');
-      return {K,L,M,raw:rowArr, index:i};
+      const S = (rowArr[ colToIndex('S') ] || rowArr[18] || '');
+      const T = (rowArr[ colToIndex('T') ] || rowArr[19] || '');
+      return {K,S,T,raw:rowArr, index:i};
     }
   }
   return null;
@@ -374,25 +374,25 @@ resetAllFields();
 
   const purchase = findPurchaseByRowSeat(r,s);
   if(!purchase){
-    let foundByLM = null;
+    let foundByST = null;
     for(let i=0;i<purchaseRows.length;i++){
       const rowArr = purchaseRows[i];
-      const L = (rowArr[colToIndex('L')] || rowArr[11] || '').toString().trim().toUpperCase();
-      const M = (rowArr[colToIndex('M')] || rowArr[12] || '').toString().trim();
-      if(L === r && M === s){
-        foundByLM = {rowArr, index:i};
+      const S = (rowArr[colToIndex('S')] || rowArr[18] || '').toString().trim().toUpperCase();
+      const T = (rowArr[colToIndex('T')] || rowArr[19] || '').toString().trim();
+      if(S === r && T === s){
+        foundByST = {rowArr, index:i};
         break;
       }
     }
-    if(foundByLM){
-      const origS = (foundByLM.rowArr[colToIndex('S')] || foundByLM.rowArr[18] || '').toString().trim().toUpperCase();
-      const origT = (foundByLM.rowArr[colToIndex('T')] || foundByLM.rowArr[19] || '').toString().trim();
-      if(origS !== r || origT !== s){
-        message.innerHTML = `<strong>Notice:</strong> This ticket has been changed from original seat ${origS}-${origT} to ${r}-${s}. We apologize for the inconvenience.`;
-        zoneVal.textContent = foundByLM.rowArr[colToIndex('K')] || foundByLM.rowArr[10] || '—';
-        rowVal.textContent = foundByLM.rowArr[colToIndex('L')] || foundByLM.rowArr[11] || '—';
-        seatVal.textContent = foundByLM.rowArr[colToIndex('M')] || foundByLM.rowArr[12] || '—';
-        log(`Seat changed detected for ${r}-${s} (original ${origS}-${origT})`);
+    if(foundByST){
+      const origL = (foundByST.rowArr[colToIndex('L')] || foundByST.rowArr[11] || '').toString().trim().toUpperCase();
+      const origM = (foundByST.rowArr[colToIndex('M')] || foundByST.rowArr[12] || '').toString().trim();
+      if(origL !== r || origM !== s){
+        message.innerHTML = `<strong>Notice:</strong> This ticket has been changed from original seat ${origL}-${origM} to ${r}-${s}. We apologize for the inconvenience.`;
+        zoneVal.textContent = foundByST.rowArr[colToIndex('K')] || foundByST.rowArr[10] || '—';
+        rowVal.textContent = foundByST.rowArr[colToIndex('S')] || foundByST.rowArr[18] || '—';
+        seatVal.textContent = foundByST.rowArr[colToIndex('T')] || foundByST.rowArr[19] || '—';
+        log(`Seat changed detected for ${r}-${s} (original ${origL}-${origM})`);
 //        qrField.style.display = 'block';
         return;
       }
@@ -403,17 +403,17 @@ resetAllFields();
     return;
   }
 
-  const S = (purchase.raw[colToIndex('S')] || '').toString().trim().toUpperCase();
-  const T = (purchase.raw[colToIndex('T')] || '').toString().trim();
   const L = (purchase.raw[colToIndex('L')] || '').toString().trim().toUpperCase();
   const M = (purchase.raw[colToIndex('M')] || '').toString().trim();
+  const S = (purchase.raw[colToIndex('S')] || '').toString().trim().toUpperCase();
+  const T = (purchase.raw[colToIndex('T')] || '').toString().trim();
 
-  if((L && L !== S) || (M && M !== T)){
-    message.innerHTML = `<strong>Notice:</strong> ⚠️請注意！您的位子原 ${S}-${T}，被調整為 ${L}-${M}。 造成不便，敬請見諒。`;
+  if((S && S !== L) || (T && T !== M)){
+    message.innerHTML = `<strong>Notice:</strong> ⚠️請注意！您的位子原 ${L}-${M}，被調整為 ${S}-${T}。 造成不便，敬請見諒。`;
     zoneVal.textContent = purchase.K || '—';
-    rowVal.textContent = L || S || '—';
-    seatVal.textContent = M || T || '—';
-    log(`Seat change: original ${S}-${T}, new ${L}-${M}`);
+    rowVal.textContent = S || L || '—';
+    seatVal.textContent = T || M || '—';
+    log(`Seat change: original ${L}-${M}, new ${S}-${T}`);
 SoundCheckVal.textContent = benefitsCheck(
   purchase.raw[colToIndex('W')] || purchase.raw[22] || '', 'benefits'
 );
@@ -435,8 +435,8 @@ BonusVal.textContent = benefitsCheck(
 
   message.innerHTML = `OK — purchase record found. Zone: ${purchase.K || '—'}`;
   zoneVal.textContent = purchase.K || '—';
-  rowVal.textContent = purchase.L || purchase.raw[colToIndex('L')] || S || '—';
-  seatVal.textContent = purchase.M || purchase.raw[colToIndex('M')] || T || '—';
+  rowVal.textContent = purchase.S || purchase.raw[colToIndex('S')] || L || '—';
+  seatVal.textContent = purchase.T || purchase.raw[colToIndex('T')] || M || '—';
 const soundCheckValRaw = purchase.raw[colToIndex('W')] || purchase.raw[22] || '';
 const polaroidValRaw  = purchase.raw[colToIndex('X')] || purchase.raw[23] || '';
 const posterValRaw    = purchase.raw[colToIndex('Z')] || purchase.raw[25] || '';

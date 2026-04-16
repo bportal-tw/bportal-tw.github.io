@@ -140,6 +140,21 @@
 ">
 
   <div id="reader" style="width:100%; max-width:420px; margin:auto;"></div>
+
+<div id="scannerInfo" style="
+  position:absolute;
+  top:20px;
+  left:50%;
+  transform:translateX(-50%);
+  color:#fff;
+  font-size:14px;
+  background:rgba(0,0,0,0.5);
+  padding:6px 12px;
+  border-radius:8px;
+">
+  Zone: — | Row: — | Seat: —
+</div>
+    
   <button id="scannerClose" style="position:absolute; bottom:30px; left:50%; transform:translateX(-50%);">
     Close
   </button>
@@ -540,10 +555,13 @@ let qrScanner = null;
 
 async function startScanner(){
   const overlay = document.getElementById('scannerOverlay');
-  overlay.style.display = 'block';
+  const info = document.getElementById('scannerInfo');
+
+  info.textContent = `Zone: ${zoneVal.textContent} | Row: ${rowVal.textContent} | Seat: ${seatVal.textContent}`;
+
+  overlay.style.display = 'flex';
 
   qrScanner = new Html5Qrcode("reader");
-
   try {
     await qrScanner.start(
       { facingMode: "environment" },
